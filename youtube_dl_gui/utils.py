@@ -42,7 +42,7 @@ def get_encoding():
     try:
         encoding = locale.getpreferredencoding()
         'TEST'.encode(encoding)
-    except:
+    except UnicodeEncodeError:
         encoding = 'UTF-8'
 
     return encoding
@@ -340,15 +340,15 @@ def to_bytes(string):
     return round(value * (KILO_SIZE ** exponent), 2)
 
 
-def format_bytes(bytes):
+def format_bytes(value):
     """Format bytes to youtube-dl size output strings."""
-    if bytes == 0.0:
+    if value == 0.0:
         exponent = 0
     else:
-        exponent = int(math.log(bytes, KILO_SIZE))
+        exponent = int(math.log(value, KILO_SIZE))
 
     suffix = FILESIZE_METRICS[exponent]
-    output_value = bytes / (KILO_SIZE ** exponent)
+    output_value = value / (KILO_SIZE ** exponent)
 
     return "%.2f%s" % (output_value, suffix)
 

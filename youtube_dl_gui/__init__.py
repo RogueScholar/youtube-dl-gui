@@ -14,6 +14,7 @@ Example:
 import sys
 import gettext
 import os.path
+from gettext import gettext as _
 
 try:
     import wx
@@ -48,7 +49,6 @@ from .utils import (
     os_path_exists,
     YOUTUBEDL_BIN
 )
-
 
 # Set config path and create options and log managers
 config_path = get_config_path()

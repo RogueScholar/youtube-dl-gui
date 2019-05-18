@@ -11,7 +11,7 @@ from threading import Thread
 from urllib.request import urlopen, URLError, HTTPError
 
 from wx import CallAfter
-from wx.lib.pubsub import pub as Publisher
+from pubsub import pub
 
 from .utils import (
     YOUTUBEDL_BIN,
@@ -87,4 +87,4 @@ class UpdateThread(Thread):
                 4) finish: The update thread is ready to join
 
         """
-        CallAfter(Publisher.sendMessage, UPDATE_PUB_TOPIC, msg=(signal, data))
+        CallAfter(pub.sendMessage, UPDATE_PUB_TOPIC, msg=(signal, data))

@@ -292,6 +292,7 @@ class OptionsManager(object):
             'native_hls': True,
             'show_completion_popup': True,
             'confirm_deletion': True,
+            'auto_download': True,
             'nomtime': False,
             'embed_thumbnail': False,
             'add_metadata': False,

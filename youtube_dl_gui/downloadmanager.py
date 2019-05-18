@@ -26,7 +26,7 @@ from threading import (
 )
 
 from wx import CallAfter
-from wx.lib.pubsub import pub as Publisher
+from pubsub import pub
 
 from .parsers import OptionsParser
 from .updatemanager import UpdateThread
@@ -40,11 +40,11 @@ from .utils import (
     to_bytes
 )
 
-
 MANAGER_PUB_TOPIC = 'dlmanager'
 WORKER_PUB_TOPIC = 'dlworker'
 
 _SYNC_LOCK = RLock()
+
 
 # Decorator that adds thread synchronization to a function
 def synchronized(lock):
@@ -54,12 +54,13 @@ def synchronized(lock):
             ret_value = func(*args, **kwargs)
             lock.release()
             return ret_value
+
         return _wrapper
+
     return _decorator
 
 
 class DownloadItem(object):
-
     """Object that represents a download.
 
     Attributes:
@@ -218,9 +219,7 @@ class DownloadItem(object):
         return self.object_id == other.object_id
 
 
-
 class DownloadList(object):
-
     """List like data structure that contains DownloadItems.
 
     Args:
@@ -342,7 +341,6 @@ class DownloadList(object):
 
 
 class DownloadManager(Thread):
-
     """Manages the download process.
 
     Attributes:
@@ -433,12 +431,12 @@ class DownloadManager(Thread):
             active_items = (workers that work) + (items waiting in the url_list).
 
         """
-        #counter = 0
-        #for worker in self._workers:
-            #if not worker.available():
-                #counter += 1
+        # counter = 0
+        # for worker in self._workers:
+        # if not worker.available():
+        # counter += 1
 
-        #counter += len(self.download_list)
+        # counter += len(self.download_list)
 
         return len(self.download_list)
 
@@ -497,7 +495,7 @@ class DownloadManager(Thread):
                     downloads using the active() method.
 
         """
-        CallAfter(Publisher.sendMessage, MANAGER_PUB_TOPIC, msg=data)
+        CallAfter(pub.sendMessage, MANAGER_PUB_TOPIC, msg=data)
 
     def _check_youtubedl(self):
         """Check if youtube-dl binary exists. If not try to download it. """
@@ -529,7 +527,6 @@ class DownloadManager(Thread):
 
 
 class Worker(Thread):
-
     """Simple worker which downloads the given url using a downloader
     from the downloaders.py module.
 
@@ -591,7 +588,7 @@ class Worker(Thread):
     def run(self):
         while self._running:
             if self._data['url'] is not None:
-                #options = self._options_parser.parse(self.opt_manager.options)
+                # options = self._options_parser.parse(self.opt_manager.options)
                 ret_code = self._downloader.download(self._data['url'], self._options)
 
                 if (ret_code == YoutubeDLDownloader.OK or
@@ -600,11 +597,11 @@ class Worker(Thread):
                     self._successful += 1
 
                 # Ask GUI for name updates
-                #self._talk_to_gui('receive', {'source': 'filename', 'dest': 'new_filename'})
+                # self._talk_to_gui('receive', {'source': 'filename', 'dest': 'new_filename'})
 
                 # Wait until you get a reply
-                #while self._wait_for_reply:
-                    #time.sleep(self.WAIT_TIME)
+                # while self._wait_for_reply:
+                # time.sleep(self.WAIT_TIME)
 
                 self._reset()
 
@@ -691,26 +688,26 @@ class Worker(Thread):
 
         """
         ## Temp dictionary which holds the updates
-        #temp_dict = {}
+        # temp_dict = {}
 
         ## Update each key
-        #for key in data:
-            #if self._data[key] != data[key]:
-                #self._data[key] = data[key]
-                #temp_dict[key] = data[key]
+        # for key in data:
+        # if self._data[key] != data[key]:
+        # self._data[key] = data[key]
+        # temp_dict[key] = data[key]
 
         ## Build the playlist status if there is an update
         ## REFACTOR re-implement this on DownloadItem or ListCtrl level?
         ##if self._data['playlist_index'] is not None:
-            ##if 'status' in temp_dict or 'playlist_index' in temp_dict:
-                ##temp_dict['status'] = '{status} {index}/{size}'.format(
-                        ##status=self._data['status'],
-                        ##index=self._data['playlist_index'],
-                        ##size=self._data['playlist_size']
-                    ##)
+        ##if 'status' in temp_dict or 'playlist_index' in temp_dict:
+        ##temp_dict['status'] = '{status} {index}/{size}'.format(
+        ##status=self._data['status'],
+        ##index=self._data['playlist_index'],
+        ##size=self._data['playlist_size']
+        ##)
 
-        #if len(temp_dict):
-            #self._talk_to_gui('send', temp_dict)
+        # if len(temp_dict):
+        # self._talk_to_gui('send', temp_dict)
         self._talk_to_gui('send', data)
 
     def _talk_to_gui(self, signal, data):
@@ -750,5 +747,4 @@ class Worker(Thread):
         if signal == 'receive':
             self._wait_for_reply = True
 
-        CallAfter(Publisher.sendMessage, WORKER_PUB_TOPIC, msg=(signal, data))
-
+        CallAfter(pub.sendMessage, WORKER_PUB_TOPIC, msg=(signal, data))

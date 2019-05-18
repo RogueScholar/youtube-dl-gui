@@ -4,3 +4,6 @@ MANIFEST
 
 dist/
 build/
+
+.idea/
+*.iml

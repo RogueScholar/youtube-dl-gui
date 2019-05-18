@@ -1,9 +1,8 @@
-import gettext
+from gettext import gettext as _
 
-from .utils import TwoWayOrderedDict as tdict
+from .utils import TwoWayOrderedDict as tDict
 
-
-OUTPUT_FORMATS = tdict([
+OUTPUT_FORMATS = tDict([
     (0, _("ID")),
     (1, _("Title")),
     (2, _("Title + ID")),
@@ -12,13 +11,11 @@ OUTPUT_FORMATS = tdict([
     (3, _("Custom"))
 ])
 
-
-DEFAULT_FORMATS = tdict([
+DEFAULT_FORMATS = tDict([
     ("0", _("default"))
 ])
 
-
-VIDEO_FORMATS = tdict([
+VIDEO_FORMATS = tDict([
     ("3gp", "3gp"),
     ("17", "3gp [144p]"),
     ("36", "3gp [240p]"),
@@ -65,8 +62,7 @@ VIDEO_FORMATS = tdict([
     ("172", "webm 256k (DASH Audio)")
 ])
 
-
-AUDIO_FORMATS = tdict([
+AUDIO_FORMATS = tDict([
     ("mp3", "mp3"),
     ("wav", "wav"),
     ("aac", "aac"),
@@ -75,7 +71,6 @@ AUDIO_FORMATS = tdict([
     ("opus", "opus"),
     ("flac", "flac")
 ])
-
 
 FORMATS = DEFAULT_FORMATS.copy()
 FORMATS.update(VIDEO_FORMATS)
@@ -94,7 +89,7 @@ def reload_strings():
     #
     #
     #
-    #NOTE Remove
+    # NOTE Remove
     # Code is so messed up that i need to reload strings else
     # the translations wont work on the about gettext tags
     global OUTPUT_FORMATS
@@ -103,7 +98,7 @@ def reload_strings():
     global AUDIO_FORMATS
     global FORMATS
 
-    OUTPUT_FORMATS = tdict([
+    OUTPUT_FORMATS = tDict([
         (0, _("ID")),
         (1, _("Title")),
         (2, _("Title + ID")),
@@ -112,13 +107,11 @@ def reload_strings():
         (3, _("Custom"))
     ])
 
-
-    DEFAULT_FORMATS = tdict([
+    DEFAULT_FORMATS = tDict([
         ("0", _("default"))
     ])
 
-
-    VIDEO_FORMATS = tdict([
+    VIDEO_FORMATS = tDict([
         ("3gp", "3gp"),
         ("17", "3gp [144p]"),
         ("36", "3gp [240p]"),
@@ -165,8 +158,7 @@ def reload_strings():
         ("172", "webm 256k (DASH Audio)")
     ])
 
-
-    AUDIO_FORMATS = tdict([
+    AUDIO_FORMATS = tDict([
         ("mp3", "mp3"),
         ("wav", "wav"),
         ("aac", "aac"),
@@ -175,7 +167,6 @@ def reload_strings():
         ("opus", "opus"),
         ("flac", "flac")
     ])
-
 
     FORMATS = DEFAULT_FORMATS.copy()
     FORMATS.update(VIDEO_FORMATS)

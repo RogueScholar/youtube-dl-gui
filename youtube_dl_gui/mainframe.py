@@ -1,10 +1,10 @@
 """Youtubedlg module responsible for the main app window. """
 
 import os
-import gettext
+from gettext import gettext as _
 
 import wx
-from wx.lib.pubsub import pub as Publisher
+from pubsub import pub
 
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
@@ -697,6 +697,9 @@ class MainFrame(wx.Frame):
                 if not self._download_list.has_item(download_item.object_id):
                     self._status_list.bind_item(download_item)
                     self._download_list.insert(download_item)
+        if self.opt_manager.options['auto_download']:
+            self._start_download()
+
 
 
     def _on_settings(self, event):
@@ -742,7 +745,7 @@ class MainFrame(wx.Frame):
                 multiple topics on the same handler.
 
         """
-        Publisher.subscribe(handler, topic)
+        pub.subscribe(handler, topic)
 
     def _create_statictext(self, label):
         return wx.StaticText(self._panel, label=label)
@@ -795,7 +798,7 @@ class MainFrame(wx.Frame):
 
         top_sizer = wx.BoxSizer(wx.HORIZONTAL)
         top_sizer.Add(self._url_text, 0, wx.ALIGN_BOTTOM | wx.BOTTOM, 5)
-        top_sizer.AddSpacer(-1)
+        top_sizer.AddStretchSpacer()
         top_sizer.Add(self._settings_button)
         panel_sizer.Add(top_sizer, 0, wx.EXPAND)
 
@@ -828,7 +831,7 @@ class MainFrame(wx.Frame):
         bottom_sizer.Add(self._buttons["reload"])
         bottom_sizer.AddSpacer(5)
         bottom_sizer.Add(self._buttons["pause"])
-        bottom_sizer.AddSpacer(10)
+        bottom_sizer.AddStretchSpacer()
         bottom_sizer.Add(self._buttons["start"])
         panel_sizer.Add(bottom_sizer, 0, wx.EXPAND | wx.TOP, 5)
 
