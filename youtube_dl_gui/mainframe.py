@@ -1005,8 +1005,8 @@ class MainFrame(wx.Frame):
         if self.opt_manager.options["disable_update"]:
             self._create_popup(_(
                 "Updates are disabled for your system. Please use the system's package manager to update youtube-dl."),
-                               self.INFO_LABEL,
-                               wx.OK | wx.ICON_INFORMATION)
+                self.INFO_LABEL,
+                wx.OK | wx.ICON_INFORMATION)
         else:
             self._update_youtubedl()
 
@@ -1028,7 +1028,7 @@ class MainFrame(wx.Frame):
         processes are not running.
 
         """
-        if self.opt_manager.options["confirm_exit"]:
+        if self.download_manager is not None and self.opt_manager.options["confirm_exit"]:
             dlg = wx.MessageDialog(self, _("Are you sure you want to exit?"), _("Exit"), wx.YES_NO | wx.ICON_QUESTION)
 
             result = dlg.ShowModal() == wx.ID_YES
