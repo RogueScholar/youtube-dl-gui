@@ -38,7 +38,7 @@ from .info import (
 )
 
 gettext.install(__packagename__)
-from .formats import reload_strings
+from .formats import load_formats
 
 from .logmanager import LogManager
 from .optionsmanager import OptionsManager
@@ -69,7 +69,7 @@ except IOError:
     opt_manager.options['locale_name'] = 'en_US'
     gettext.install(__packagename__)
 
-reload_strings()
+load_formats()
 
 from .mainframe import MainFrame
 
