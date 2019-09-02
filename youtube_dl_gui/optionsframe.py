@@ -22,11 +22,12 @@ from .formats import (
     VIDEO_FORMATS,
     AUDIO_FORMATS
 )
-#REFACTOR Move all formats, etc to formats.py
+
+
+# REFACTOR Move all formats, etc to formats.py
 
 
 class OptionsFrame(wx.Frame):
-
     """Youtubedlg options frame class.
 
     Args:
@@ -45,7 +46,7 @@ class OptionsFrame(wx.Frame):
         self.app_icon = None
 
         # Set the app icon
-        #REFACTOR Get icon from parent
+        # REFACTOR Get icon from parent
         app_icon_path = get_icon_file()
         if app_icon_path is not None:
             self.app_icon = wx.Icon(app_icon_path, wx.BITMAP_TYPE_PNG)
@@ -106,7 +107,7 @@ class OptionsFrame(wx.Frame):
     def _on_close(self, event):
         """Event handler for wx.EVT_CLOSE event."""
         self.save_all_options()
-        #REFACTOR Parent create specific callback
+        # REFACTOR Parent create specific callback
         self.GetParent()._update_videoformat_combobox()
         self.Hide()
 
@@ -140,7 +141,6 @@ class OptionsFrame(wx.Frame):
 
 
 class TabPanel(wx.Panel):
-
     """Main tab class from which each tab inherits.
 
     Args:
@@ -168,9 +168,9 @@ class TabPanel(wx.Panel):
 
     def __init__(self, parent, notebook):
         super(TabPanel, self).__init__(notebook)
-        #REFACTOR Maybe add methods to access those
-        #save_options(key, value)
-        #load_options(key)
+        # REFACTOR Maybe add methods to access those
+        # save_options(key, value)
+        # load_options(key)
         self.opt_manager = parent.opt_manager
         self.log_manager = parent.log_manager
         self.app_icon = parent.app_icon
@@ -220,9 +220,9 @@ class TabPanel(wx.Panel):
             _, country = lang_code.split('_')
 
             if country in flagart.catalog:
-                flag_bmp = flagart.catalog[country].getBitmap()
+                flag_bmp = flagart.catalog[country].Bitmap
             else:
-                flag_bmp = flagart.catalog["BLANK"].getBitmap()
+                flag_bmp = flagart.catalog["BLANK"].Bitmap
 
             combobox.Append(lang_name, flag_bmp)
 
@@ -261,7 +261,6 @@ class TabPanel(wx.Panel):
 
 
 class GeneralTab(TabPanel):
-
     # Lang code = <ISO 639-1>_<ISO 3166-1 alpha-2>
     LOCALE_NAMES = twodict([
         ('ar_SA', 'Arabic'),
@@ -304,10 +303,12 @@ class GeneralTab(TabPanel):
         super(GeneralTab, self).__init__(*args, **kwargs)
 
         self.language_label = self.crt_statictext(_("Language"))
-        self.language_combobox = self.crt_bitmap_combobox(list(self.LOCALE_NAMES.items()), event_handler=self._on_language)
+        self.language_combobox = self.crt_bitmap_combobox(list(self.LOCALE_NAMES.items()),
+                                                          event_handler=self._on_language)
 
         self.filename_format_label = self.crt_statictext(_("Filename format"))
-        self.filename_format_combobox = self.crt_combobox(list(OUTPUT_FORMATS.values()), event_handler=self._on_filename)
+        self.filename_format_combobox = self.crt_combobox(list(OUTPUT_FORMATS.values()),
+                                                          event_handler=self._on_filename)
         self.filename_custom_format = self.crt_textctrl()
         self.filename_custom_format_button = self.crt_button("...", self._on_format)
 
@@ -320,7 +321,8 @@ class GeneralTab(TabPanel):
         self.show_completion_popup_checkbox = self.crt_checkbox(_("Inform me on download completion"))
         self.auto_download_after_add = self.crt_checkbox(_("Auto download videos after adding them to queue"))
 
-        self.shutdown_checkbox = self.crt_checkbox(_("Shutdown on download completion"), event_handler=self._on_shutdown)
+        self.shutdown_checkbox = self.crt_checkbox(_("Shutdown on download completion"),
+                                                   event_handler=self._on_shutdown)
         self.sudo_textctrl = self.crt_textctrl(wx.TE_PASSWORD)
 
         # Build the menu for the custom format button
@@ -438,10 +440,10 @@ class GeneralTab(TabPanel):
         self.auto_download_after_add.SetValue(self.opt_manager.options["auto_download"])
         self.confirm_deletion_checkbox.SetValue(self.opt_manager.options["confirm_deletion"])
 
-        #REFACTOR Automatically call on the new methods
-        #save_options
-        #load_options
-        #NOTE Maybe on init add callback?
+        # REFACTOR Automatically call on the new methods
+        # save_options
+        # load_options
+        # NOTE Maybe on init add callback?
         self._on_filename(None)
         self._on_shutdown(None)
 
@@ -459,7 +461,6 @@ class GeneralTab(TabPanel):
 
 
 class FormatsTab(TabPanel):
-
     AUDIO_QUALITY = twodict([("0", _("high")), ("5", _("mid")), ("9", _("low"))])
 
     def __init__(self, *args, **kwargs):
@@ -509,9 +510,11 @@ class FormatsTab(TabPanel):
         self.SetSizer(main_sizer)
 
     def load_options(self):
-        checked_video_formats = [VIDEO_FORMATS[vformat] for vformat in self.opt_manager.options["selected_video_formats"]]
+        checked_video_formats = [VIDEO_FORMATS[vformat] for vformat in
+                                 self.opt_manager.options["selected_video_formats"]]
         self.video_formats_checklistbox.SetCheckedStrings(checked_video_formats)
-        checked_audio_formats = [AUDIO_FORMATS[aformat] for aformat in self.opt_manager.options["selected_audio_formats"]]
+        checked_audio_formats = [AUDIO_FORMATS[aformat] for aformat in
+                                 self.opt_manager.options["selected_audio_formats"]]
         self.audio_formats_checklistbox.SetCheckedStrings(checked_audio_formats)
         self.keep_video_checkbox.SetValue(self.opt_manager.options["keep_video"])
         self.audio_quality_combobox.SetValue(self.AUDIO_QUALITY[self.opt_manager.options["audio_quality"]])
@@ -520,9 +523,11 @@ class FormatsTab(TabPanel):
         self.add_metadata_checkbox.SetValue(self.opt_manager.options["add_metadata"])
 
     def save_options(self):
-        checked_video_formats = [VIDEO_FORMATS[vformat] for vformat in self.video_formats_checklistbox.GetCheckedStrings()]
+        checked_video_formats = [VIDEO_FORMATS[vformat] for vformat in
+                                 self.video_formats_checklistbox.GetCheckedStrings()]
         self.opt_manager.options["selected_video_formats"] = checked_video_formats
-        checked_audio_formats = [AUDIO_FORMATS[aformat] for aformat in self.audio_formats_checklistbox.GetCheckedStrings()]
+        checked_audio_formats = [AUDIO_FORMATS[aformat] for aformat in
+                                 self.audio_formats_checklistbox.GetCheckedStrings()]
         self.opt_manager.options["selected_audio_formats"] = checked_audio_formats
         self.opt_manager.options["keep_video"] = self.keep_video_checkbox.GetValue()
         self.opt_manager.options["audio_quality"] = self.AUDIO_QUALITY[self.audio_quality_combobox.GetValue()]
@@ -532,7 +537,6 @@ class FormatsTab(TabPanel):
 
 
 class DownloadsTab(TabPanel):
-
     # Lang code = ISO 639-1
     SUBS_LANG = twodict([
         ("en", _("English")),
@@ -661,7 +665,7 @@ class DownloadsTab(TabPanel):
         self.subtitles_lang_listbox.Enable(self.subtitles_combobox.GetValue() == self.SUBS_CHOICES[-1])
 
     def load_options(self):
-        #NOTE Find a better way to do this
+        # NOTE Find a better way to do this
         if self.opt_manager.options["write_subs"]:
             self.subtitles_combobox.SetValue(self.SUBS_CHOICES[3])
         elif self.opt_manager.options["write_all_subs"]:
@@ -714,7 +718,6 @@ class DownloadsTab(TabPanel):
 
 
 class AdvancedTab(TabPanel):
-
     TEXTCTRL_SIZE = (300, -1)
 
     def __init__(self, *args, **kwargs):
@@ -911,7 +914,6 @@ class ExtraTab(TabPanel):
 
 
 class LogGUI(wx.Frame):
-
     """Simple window for reading the STDERR.
 
     Attributes:
