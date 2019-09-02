@@ -1,5 +1,3 @@
-[![Donations Badge](https://yourdonation.rocks/images/badge.svg)](https://mrs0m30n3.github.io/youtube-dl-gui/donate.html)
-
 # youtube-dlG
 A cross platform front-end GUI of the popular [youtube-dl](https://rg3.github.io/youtube-dl/) media downloader written in wxPython. [Supported sites](https://rg3.github.io/youtube-dl/supportedsites.html)
 
