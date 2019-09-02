@@ -1040,10 +1040,10 @@ class MainFrame(wx.Frame):
     def close(self):
         if self.download_manager is not None:
             self.download_manager.stop_downloads()
-            self.download_manager.join()
+            self.download_manager.join()  # Wait for the download thread
 
         if self.update_thread is not None:
-            self.update_thread.join()
+            self.update_thread.join()  # Wait for the update thread
 
         # Store main-options frame size
         self.opt_manager.options['main_win_size'] = self.GetSize()
