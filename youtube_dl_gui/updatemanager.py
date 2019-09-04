@@ -39,7 +39,7 @@ class UpdateThread(Thread):
 
     """
 
-    LATEST_YOUTUBE_DL = 'https://yt-dl.org/latest/'
+    LATEST_YOUTUBE_DL = 'https://yt-dl.org/downloads/latest/'
     DOWNLOAD_TIMEOUT = 10
 
     def __init__(self, download_path, quiet=False):
@@ -64,7 +64,7 @@ class UpdateThread(Thread):
 
             self._talk_to_gui('correct')
         except (HTTPError, URLError, IOError) as error:
-            self._talk_to_gui('error', unicode(error))
+            self._talk_to_gui('error', str(error))
 
         if not self.quiet:
             self._talk_to_gui('finish')
