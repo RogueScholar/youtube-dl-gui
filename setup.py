@@ -83,13 +83,12 @@ from youtube_dl_gui import (
 __packagename__ = str(__packagename__)
 
 
-def on_windows():
+def is_windows():
     """Returns True if OS is Windows."""
     return os.name == "nt"
 
 
 class BuildBin(cmd.Command):
-
     description = "build the youtube-dl-gui binary file"
     user_options = []
 
@@ -108,7 +107,6 @@ class BuildBin(cmd.Command):
 
 
 class BuildTranslations(cmd.Command):
-
     description = "build the translation files"
     user_options = []
 
@@ -117,7 +115,7 @@ class BuildTranslations(cmd.Command):
         self.search_pattern = None
 
     def finalize_options(self):
-        if on_windows():
+        if is_windows():
             self.exec_name = "msgfmt.exe"
         else:
             self.exec_name = "msgfmt"
@@ -137,13 +135,12 @@ class BuildTranslations(cmd.Command):
 
 
 class Build(build):
-
     """Overwrite the default 'build' behaviour."""
 
     sub_commands = [
-        ("build_bin", None),
-        ("build_trans", None)
-    ] + build.sub_commands
+                       ("build_bin", None),
+                       ("build_trans", None)
+                   ] + build.sub_commands
 
     build.user_options.append(("no-updates", None, "build with updates disabled"))
 
@@ -300,22 +297,22 @@ def windows_setup():
     return normal_setup()
 
 
-if on_windows():
+if is_windows():
     params = windows_setup()
 else:
     params = linux_setup()
 
 setup(
-    author              = __author__,
-    name                = __appname__,
-    version             = __version__,
-    license             = __license__,
-    author_email        = __contact__,
-    url                 = __projecturl__,
-    description         = __description__,
-    long_description    = __descriptionfull__,
-    packages            = [__packagename__],
-    cmdclass            = cmdclass,
+    author=__author__,
+    name=__appname__,
+    version=__version__,
+    license=__license__,
+    author_email=__contact__,
+    url=__projecturl__,
+    description=__description__,
+    long_description=__descriptionfull__,
+    packages=[__packagename__],
+    cmdclass=cmdclass,
 
     **params
 )
