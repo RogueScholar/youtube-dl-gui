@@ -21,7 +21,8 @@ class TestParse(unittest.TestCase):
     def setUp(self):
         # Create the options_dict based on the OptionHolder
         # items inside the OptionsParser object
-        self.options_dict = {item.name:item.default_value for item in OptionsParser()._ydl_options}
+        self.options_dict = {
+            item.name: item.default_value for item in OptionsParser()._ydl_options}
 
         # Add extra options used by the OptionsParser.parse method
         self.options_dict["save_path"] = "/home/user/Workplace/test/youtube"
@@ -34,7 +35,8 @@ class TestParse(unittest.TestCase):
     def check_options_parse(self, expected_options):
         options_parser = OptionsParser()
 
-        self.assertEqual(sorted(options_parser.parse(self.options_dict)), sorted(expected_options))
+        self.assertEqual(sorted(options_parser.parse(
+            self.options_dict)), sorted(expected_options))
 
     def test_parse_to_audio_requirement_bug(self):
         """Test case for the 'to_audio' requirement."""
@@ -77,14 +79,14 @@ class TestParse(unittest.TestCase):
                              "-f",
                              "mp4",
                              "-o",
-                             os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+                             os.path.join(
+                                 "/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
                              "--recode-video",
                              "mkv",
                              "--postprocessor-args",
                              "-codec copy -report"]
 
         self.check_options_parse(expected_cmd_list)
-
 
         # Test with two quoted 'cmd_args'
         self.options_dict["cmd_args"] = "--postprocessor-args \"-y -report\""
@@ -93,12 +95,12 @@ class TestParse(unittest.TestCase):
                              "-f",
                              "mp4",
                              "-o",
-                             os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+                             os.path.join(
+                                 "/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
                              "--postprocessor-args",
                              "-y -report"]
 
         self.check_options_parse(expected_cmd_list)
-
 
         # Test with one quoted 'cmd_arg' followed by other cmd line args
         self.options_dict["cmd_args"] = "--postprocessor-args \"-y\" -v"
@@ -107,21 +109,23 @@ class TestParse(unittest.TestCase):
                              "-f",
                              "mp4",
                              "-o",
-                             os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+                             os.path.join(
+                                 "/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
                              "--postprocessor-args",
                              "-y",
                              "-v"]
 
         self.check_options_parse(expected_cmd_list)
 
-
         # Test the example presented in issue #54
         self.options_dict["cmd_args"] = "-f \"(mp4)[width<1300]\""
-        self.options_dict["video_format"] = "0"  # Set video format to 'default'
+        # Set video format to 'default'
+        self.options_dict["video_format"] = "0"
 
         expected_cmd_list = ["--newline",
                              "-o",
-                             os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+                             os.path.join(
+                                 "/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
                              "-f",
                              "(mp4)[width<1300]"]
 

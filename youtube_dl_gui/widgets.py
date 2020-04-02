@@ -40,7 +40,8 @@ class ListBoxWithHeaders(wx.ListBox):
 
     def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, choices=[], style=0, validator=wx.DefaultValidator, name=NAME):
-        super(ListBoxWithHeaders, self).__init__(parent, id, pos, size, [], style, validator, name)
+        super(ListBoxWithHeaders, self).__init__(
+            parent, id, pos, size, [], style, validator, name)
         self.__headers = set()
 
         # Ignore all key events i'm bored to handle the header selection
@@ -280,10 +281,12 @@ class CustomComboBox(wx.Panel):
         assert style == self.CB_READONLY or style == 0
 
         # Create components
-        self.textctrl = wx.TextCtrl(self, wx.ID_ANY, style=style, validator=validator)
+        self.textctrl = wx.TextCtrl(
+            self, wx.ID_ANY, style=style, validator=validator)
         tc_height = self.textctrl.GetSize()[1]
 
-        self.button = wx.Button(self, wx.ID_ANY, "▾", size=(tc_height, tc_height))
+        self.button = wx.Button(self, wx.ID_ANY, "▾",
+                                size=(tc_height, tc_height))
 
         # Create the ListBoxPopup in two steps
         self.listbox = ListBoxPopup(self)
@@ -300,7 +303,8 @@ class CustomComboBox(wx.Panel):
         self.button.Bind(wx.EVT_BUTTON, self._on_button)
 
         for event in ListBoxPopup.EVENTS_TABLE.values():
-            self.listbox.Bind(wx.PyEventBinder(event.GetEventType()), self._propagate)
+            self.listbox.Bind(wx.PyEventBinder(
+                event.GetEventType()), self._propagate)
 
         # Append items since the ListBoxPopup does not have the 'choices' arg
         self.listbox.GetControl().AppendItems(choices)
@@ -329,7 +333,8 @@ class CustomComboBox(wx.Panel):
         _, me_y_axis = self.GetScreenPosition()
 
         available_height = screen_height - (me_y_axis + tc_height)
-        sug_width, sug_height = self.listbox.GetAdjustedSize(me_width, tc_height, available_height)
+        sug_width, sug_height = self.listbox.GetAdjustedSize(
+            me_width, tc_height, available_height)
 
         return me_width, sug_height
 

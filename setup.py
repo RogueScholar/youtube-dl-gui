@@ -48,6 +48,17 @@ Notes:
 
 """
 
+from youtube_dl_gui import (
+    __author__,
+    __appname__,
+    __contact__,
+    __version__,
+    __license__,
+    __projecturl__,
+    __description__,
+    __packagename__,
+    __descriptionfull__
+)
 from distutils import cmd, log
 from distutils.core import setup
 from distutils.command.build import build
@@ -67,17 +78,6 @@ if PY2EXE:
         print(error)
         sys.exit(1)
 
-from youtube_dl_gui import (
-    __author__,
-    __appname__,
-    __contact__,
-    __version__,
-    __license__,
-    __projecturl__,
-    __description__,
-    __packagename__,
-    __descriptionfull__
-)
 
 # Setup can not handle unicode
 __packagename__ = str(__packagename__)
@@ -120,7 +120,8 @@ class BuildTranslations(cmd.Command):
         else:
             self.exec_name = "msgfmt"
 
-        self.search_pattern = os.path.join(__packagename__, "locale", "*", "LC_MESSAGES", "youtube_dl_gui.po")
+        self.search_pattern = os.path.join(
+            __packagename__, "locale", "*", "LC_MESSAGES", "youtube_dl_gui.po")
 
     def run(self):
         for po_file in glob.glob(self.search_pattern):
@@ -130,7 +131,8 @@ class BuildTranslations(cmd.Command):
                 log.info("building MO file for '{}'".format(po_file))
                 call([self.exec_name, "-o", mo_file, po_file])
             except OSError:
-                log.error("could not locate file '{}', exiting...".format(self.exec_name))
+                log.error(
+                    "could not locate file '{}', exiting...".format(self.exec_name))
                 sys.exit(1)
 
 
@@ -138,11 +140,12 @@ class Build(build):
     """Overwrite the default 'build' behaviour."""
 
     sub_commands = [
-                       ("build_bin", None),
-                       ("build_trans", None)
-                   ] + build.sub_commands
+        ("build_bin", None),
+        ("build_trans", None)
+    ] + build.sub_commands
 
-    build.user_options.append(("no-updates", None, "build with updates disabled"))
+    build.user_options.append(
+        ("no-updates", None, "build with updates disabled"))
 
     def initialize_options(self):
         build.initialize_options(self)

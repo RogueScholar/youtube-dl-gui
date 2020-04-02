@@ -56,14 +56,16 @@ class TestRemove(unittest.TestCase):
     """Test case for the DownloadList remove method."""
 
     def setUp(self):
-        self.mocks = [mock.Mock(object_id=0), mock.Mock(object_id=1), mock.Mock(object_id=2)]
+        self.mocks = [mock.Mock(object_id=0), mock.Mock(
+            object_id=1), mock.Mock(object_id=2)]
         self.dlist = DownloadList(self.mocks)
 
     def test_remove(self):
         self.assertTrue(self.dlist.remove(1))
 
         self.assertEqual(self.dlist._items_list, [0, 2])
-        self.assertEqual(self.dlist._items_dict, {0: self.mocks[0], 2: self.mocks[2]})
+        self.assertEqual(self.dlist._items_dict, {
+                         0: self.mocks[0], 2: self.mocks[2]})
 
     def test_remove_not_exist(self):
         self.assertRaises(KeyError, self.dlist.remove, 3)
@@ -73,7 +75,8 @@ class TestRemove(unittest.TestCase):
 
         self.assertFalse(self.dlist.remove(1))
         self.assertEqual(self.dlist._items_list, [0, 1, 2])
-        self.assertEqual(self.dlist._items_dict, {0: self.mocks[0], 1: self.mocks[1], 2: self.mocks[2]})
+        self.assertEqual(self.dlist._items_dict, {
+                         0: self.mocks[0], 1: self.mocks[1], 2: self.mocks[2]})
 
 
 class TestFetchNext(unittest.TestCase):
@@ -83,7 +86,8 @@ class TestFetchNext(unittest.TestCase):
     def test_fetch_next(self):
         items_count = 3
 
-        mocks = [mock.Mock(object_id=i, stage="Queued") for i in range(items_count)]
+        mocks = [mock.Mock(object_id=i, stage="Queued")
+                 for i in range(items_count)]
 
         dlist = DownloadList(mocks)
 

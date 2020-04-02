@@ -90,12 +90,14 @@ class OptionsParser(object):
             OptionHolder('keep_video', '-k', False),
             OptionHolder('restrict_filenames', '--restrict-filenames', False),
             OptionHolder('save_path', '-o', ''),
-            OptionHolder('embed_subs', '--embed-subs', False, ['write_auto_subs', 'write_subs']),
+            OptionHolder('embed_subs', '--embed-subs', False,
+                         ['write_auto_subs', 'write_subs']),
             OptionHolder('to_audio', '-x', False),
             OptionHolder('audio_format', '--audio-format', ''),
             OptionHolder('video_format', '-f', '0'),
             OptionHolder('subs_lang', '--sub-lang', '', ['write_subs']),
-            OptionHolder('audio_quality', '--audio-quality', '5', ['to_audio']),
+            OptionHolder('audio_quality', '--audio-quality',
+                         '5', ['to_audio']),
             OptionHolder('youtube_dl_debug', '-v', False),
             OptionHolder('ignore_config', '--ignore-config', False),
             OptionHolder('native_hls', '--hls-prefer-native', False),
@@ -130,7 +132,7 @@ class OptionsParser(object):
 
         # Parse basic youtube-dl command line options
         for option in self._ydl_options:
-            #NOTE Special case should be removed
+            # NOTE Special case should be removed
             if option.name == "to_audio":
                 if options_dict["audio_format"] == "":
                     value = options_dict[option.name]
@@ -145,13 +147,14 @@ class OptionsParser(object):
                     options_list.append(option.flag)
                     options_list.append(to_string(value))
 
-                    #NOTE Temp fix
+                    # NOTE Temp fix
                     # If current 'audio_quality' is not the default one ('5')
                     # then append the audio quality flag and value to the
                     # options list
                     if options_dict["audio_quality"] != "5":
                         options_list.append("--audio-quality")
-                        options_list.append(to_string(options_dict["audio_quality"]))
+                        options_list.append(
+                            to_string(options_dict["audio_quality"]))
 
             elif option.name == "audio_quality":
                 # If the '--audio-quality' is not already in the options list
@@ -245,7 +248,8 @@ class OptionsParser(object):
 
         """
         if options_dict['video_format'] != '0' and options_dict['second_video_format'] != '0':
-            options_dict['video_format'] = options_dict['video_format'] + '+' + options_dict['second_video_format']
+            options_dict['video_format'] = options_dict['video_format'] + \
+                '+' + options_dict['second_video_format']
 
     def _build_filesizes(self, options_dict):
         """Build the filesize options values.
@@ -258,7 +262,9 @@ class OptionsParser(object):
 
         """
         if options_dict['min_filesize']:
-            options_dict['min_filesize'] = to_string(options_dict['min_filesize']) + options_dict['min_filesize_unit']
+            options_dict['min_filesize'] = to_string(
+                options_dict['min_filesize']) + options_dict['min_filesize_unit']
 
         if options_dict['max_filesize']:
-            options_dict['max_filesize'] = to_string(options_dict['max_filesize']) + options_dict['max_filesize_unit']
+            options_dict['max_filesize'] = to_string(
+                options_dict['max_filesize']) + options_dict['max_filesize_unit']

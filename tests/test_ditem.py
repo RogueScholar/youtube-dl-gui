@@ -28,7 +28,8 @@ class TestItemInit(unittest.TestCase):
         self.assertEqual(ditem.url, url)
         self.assertEqual(ditem.options, options)
         # Python 3 has large hash; limit to C long
-        self.assertEqual(ditem.object_id, int(str(hash(url + str(options)))[:9]))
+        self.assertEqual(ditem.object_id, int(
+            str(hash(url + str(options)))[:9]))
 
         self.assertEqual(ditem.path, "")
         self.assertEqual(ditem.filenames, [])
@@ -63,7 +64,8 @@ class TestGetFiles(unittest.TestCase):
         self.ditem.filenames = ["file1", "file2"]
         self.ditem.extensions = [".mp4", ".m4a"]
 
-        self.assertEqual(self.ditem.get_files(), [os.path.join(path, "file1" + ".mp4"), os.path.join(path, "file2" + ".m4a")])
+        self.assertEqual(self.ditem.get_files(), [os.path.join(
+            path, "file1" + ".mp4"), os.path.join(path, "file2" + ".m4a")])
 
     def test_get_files_no_data(self):
         self.assertEqual(self.ditem.get_files(), [])
@@ -183,7 +185,6 @@ class TestUpdateStats(unittest.TestCase):
 
         self.assertEqual(self.ditem.filesizes, [9909043.20])
 
-
         self.ditem.update_stats({"filename": "somefilename.f2",
                                  "extension": ".m4a",
                                  "filesize": "2.22MiB",
@@ -194,7 +195,8 @@ class TestUpdateStats(unittest.TestCase):
                                  "path": path})
 
         self.assertEqual(self.ditem.path, path)
-        self.assertEqual(self.ditem.filenames, ["somefilename.f1", "somefilename.f2"])
+        self.assertEqual(self.ditem.filenames, [
+                         "somefilename.f1", "somefilename.f2"])
         self.assertEqual(self.ditem.extensions, [".mp4", ".m4a"])
         self.assertEqual(self.ditem.filesizes, [9909043.20])
 
@@ -261,7 +263,6 @@ class TestUpdateStats(unittest.TestCase):
 
         self.assertEqual(self.ditem.filesizes, [10747904.0])
 
-
         self.ditem.update_stats({"filename": "someotherfilename.f2",
                                  "extension": ".m4a",
                                  "filesize": "3.33MiB",
@@ -272,7 +273,8 @@ class TestUpdateStats(unittest.TestCase):
                                  "path": path})
 
         self.assertEqual(self.ditem.path, path)
-        self.assertEqual(self.ditem.filenames, ["someotherfilename.f1", "someotherfilename.f2"])
+        self.assertEqual(self.ditem.filenames, [
+                         "someotherfilename.f1", "someotherfilename.f2"])
         self.assertEqual(self.ditem.extensions, [".mp4", ".m4a"])
         self.assertEqual(self.ditem.filesizes, [10747904.0])
 
@@ -307,7 +309,8 @@ class TestUpdateStats(unittest.TestCase):
                                  "playlist_size": "10",
                                  "playlist_index": "3"})
 
-        self.assertEqual(self.ditem.filenames, ["someotherfilename.f1", "someotherfilename.f2"])
+        self.assertEqual(self.ditem.filenames, [
+                         "someotherfilename.f1", "someotherfilename.f2"])
         self.assertEqual(self.ditem.extensions, [".mp4", ".m4a"])
         self.assertEqual(self.ditem.filesizes, [10747904.0, 3491758.08])
         self.assertEqual(
@@ -351,7 +354,8 @@ class TestUpdateStats(unittest.TestCase):
         )
 
     def test_update_stats_not_string(self):
-        self.ditem.update_stats({"filename": None, "status": 1234, "eta": False})
+        self.ditem.update_stats(
+            {"filename": None, "status": 1234, "eta": False})
 
         self.assertEqual(self.ditem.progress_stats["filename"], "url")
         self.assertEqual(self.ditem.progress_stats["status"], "Queued")
@@ -412,7 +416,8 @@ class TestDownloadItemPrivate(unittest.TestCase):
                             "eta": "",
                             "status": "Post Processing"})
 
-        self.assertEqual(ditem.filesizes, [10485760.00, 3617587.20, 14103347.20])
+        self.assertEqual(ditem.filesizes, [
+                         10485760.00, 3617587.20, 14103347.20])
 
         self.assertEqual(
             ditem.progress_stats,

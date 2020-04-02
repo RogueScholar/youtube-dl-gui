@@ -32,7 +32,8 @@ if os.name == 'nt':
     YOUTUBEDL_BIN += '.exe'
 
 
-FILESIZE_METRICS = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+FILESIZE_METRICS = ["B", "KiB", "MiB",
+                    "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
 
 KILO_SIZE = 1024.0
 
@@ -73,7 +74,8 @@ def convert_item(item, to_unicode=False):
 
         for sub_item in item:
             if isinstance(item, dict):
-                temp_list.append((convert_item(sub_item, to_unicode), convert_item(item[sub_item], to_unicode)))
+                temp_list.append(
+                    (convert_item(sub_item, to_unicode), convert_item(item[sub_item], to_unicode)))
             else:
                 temp_list.append(convert_item(sub_item, to_unicode))
 
@@ -119,12 +121,14 @@ locale_getdefaultlocale = convert_on_bounds(locale.getdefaultlocale)
 if os.name == 'nt':
     os_startfile = convert_on_bounds(os.startfile)
 
+
 def remove_file(filename):
     if os_path_exists(filename):
         os.remove(filename)
         return True
 
     return False
+
 
 def remove_shortcuts(path):
     """Return given path after removing the shortcuts. """
@@ -379,9 +383,9 @@ def build_command(options_list, url):
 
 def get_default_lang():
     """Return the language.
-    
+
     Returns:
         The chosen language if present, or a default of 'en_US' if blank.
-    
+
     """
     return locale_getdefaultlocale()[0] or 'en_US'

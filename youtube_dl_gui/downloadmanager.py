@@ -191,7 +191,8 @@ class DownloadItem(object):
 
         if "filesize" in stats_dict:
             if stats_dict["percent"] == "100%" and len(self.filesizes) < len(self.filenames):
-                filesize = stats_dict["filesize"].lstrip("~")  # HLS downloader etc
+                filesize = stats_dict["filesize"].lstrip(
+                    "~")  # HLS downloader etc
                 self.filesizes.append(to_bytes(filesize))
 
         if "status" in stats_dict:
@@ -201,7 +202,8 @@ class DownloadItem(object):
                 post_proc_filesize = self.filesizes[0] + self.filesizes[1]
 
                 self.filesizes.append(post_proc_filesize)
-                self.progress_stats["filesize"] = format_bytes(post_proc_filesize)
+                self.progress_stats["filesize"] = format_bytes(
+                    post_proc_filesize)
 
             self._set_stage(stats_dict["status"])
 
@@ -373,7 +375,8 @@ class DownloadManager(Thread):
         # Init the custom workers thread pool
         log_lock = None if log_manager is None else Lock()
         wparams = (opt_manager, self._youtubedl_path(), log_manager, log_lock)
-        self._workers = [Worker(*wparams) for _ in range(opt_manager.options["workers_number"])]
+        self._workers = [Worker(*wparams)
+                         for _ in range(opt_manager.options["workers_number"])]
 
         self.start()
 
@@ -500,7 +503,8 @@ class DownloadManager(Thread):
     def _check_youtubedl(self):
         """Check if youtube-dl binary exists. If not try to download it. """
         if not os_path_exists(self._youtubedl_path()) and self.parent.update_thread is None:
-            self.parent.update_thread = UpdateThread(self.opt_manager.options['youtubedl_path'], True)
+            self.parent.update_thread = UpdateThread(
+                self.opt_manager.options['youtubedl_path'], True)
             self.parent.update_thread.join()
             self.parent.update_thread = None
 
@@ -559,7 +563,8 @@ class Worker(Thread):
         self.log_manager = log_manager
         self.log_lock = log_lock
 
-        self._downloader = YoutubeDLDownloader(youtubedl, self._data_hook, self._log_data)
+        self._downloader = YoutubeDLDownloader(
+            youtubedl, self._data_hook, self._log_data)
         self._options_parser = OptionsParser()
         self._successful = 0
         self._running = True
@@ -589,7 +594,8 @@ class Worker(Thread):
         while self._running:
             if self._data['url'] is not None:
                 # options = self._options_parser.parse(self.opt_manager.options)
-                ret_code = self._downloader.download(self._data['url'], self._options)
+                ret_code = self._downloader.download(
+                    self._data['url'], self._options)
 
                 if (ret_code == YoutubeDLDownloader.OK or
                         ret_code == YoutubeDLDownloader.ALREADY or
@@ -687,24 +693,24 @@ class Worker(Thread):
                 extract_data() function under the downloaders.py module.
 
         """
-        ## Temp dictionary which holds the updates
+        # Temp dictionary which holds the updates
         # temp_dict = {}
 
-        ## Update each key
+        # Update each key
         # for key in data:
         # if self._data[key] != data[key]:
         # self._data[key] = data[key]
         # temp_dict[key] = data[key]
 
-        ## Build the playlist status if there is an update
-        ## REFACTOR re-implement this on DownloadItem or ListCtrl level?
-        ##if self._data['playlist_index'] is not None:
-        ##if 'status' in temp_dict or 'playlist_index' in temp_dict:
-        ##temp_dict['status'] = '{status} {index}/{size}'.format(
-        ##status=self._data['status'],
-        ##index=self._data['playlist_index'],
-        ##size=self._data['playlist_size']
-        ##)
+        # Build the playlist status if there is an update
+        # REFACTOR re-implement this on DownloadItem or ListCtrl level?
+        # if self._data['playlist_index'] is not None:
+        # if 'status' in temp_dict or 'playlist_index' in temp_dict:
+        # temp_dict['status'] = '{status} {index}/{size}'.format(
+        # status=self._data['status'],
+        # index=self._data['playlist_index'],
+        # size=self._data['playlist_size']
+        # )
 
         # if len(temp_dict):
         # self._talk_to_gui('send', temp_dict)

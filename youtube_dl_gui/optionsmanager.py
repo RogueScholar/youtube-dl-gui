@@ -230,7 +230,7 @@ class OptionsManager(object):
             disable_update (boolean): When True the update process will be disabled.
 
         """
-        #REFACTOR Remove old options & check options validation
+        # REFACTOR Remove old options & check options validation
         self.options = {
             'save_path': os_path_expanduser('~'),
             'save_path_dirs': [
@@ -341,23 +341,27 @@ class OptionsManager(object):
 
         """
         VALID_VIDEO_FORMAT = ('0', '17', '36', '5', '34', '35', '43', '44', '45',
-            '46', '18', '22', '37', '38', '160', '133', '134', '135', '136','137',
-            '264', '138', '242', '243', '244', '247', '248', '271', '272', '82',
-            '83', '84', '85', '100', '101', '102', '139', '140', '141', '171', '172')
+                              '46', '18', '22', '37', '38', '160', '133', '134', '135', '136', '137',
+                              '264', '138', '242', '243', '244', '247', '248', '271', '272', '82',
+                              '83', '84', '85', '100', '101', '102', '139', '140', '141', '171', '172')
 
-        VALID_AUDIO_FORMAT = ('mp3', 'wav', 'aac', 'm4a', 'vorbis', 'opus', 'flac', '')
+        VALID_AUDIO_FORMAT = ('mp3', 'wav', 'aac', 'm4a',
+                              'vorbis', 'opus', 'flac', '')
 
         VALID_AUDIO_QUALITY = ('0', '5', '9')
 
         VALID_FILESIZE_UNIT = ('', 'k', 'm', 'g', 't', 'p', 'e', 'z', 'y')
 
-        VALID_SUB_LANGUAGE = ('en', 'el', 'pt', 'fr', 'it', 'ru', 'es', 'de', 'he', 'sv', 'tr')
+        VALID_SUB_LANGUAGE = ('en', 'el', 'pt', 'fr', 'it',
+                              'ru', 'es', 'de', 'he', 'sv', 'tr')
 
         MIN_FRAME_SIZE = 100
 
         # Decode string formatted tuples back to normal tuples
-        settings_dictionary['main_win_size'] = decode_tuple(settings_dictionary['main_win_size'])
-        settings_dictionary['opts_win_size'] = decode_tuple(settings_dictionary['opts_win_size'])
+        settings_dictionary['main_win_size'] = decode_tuple(
+            settings_dictionary['main_win_size'])
+        settings_dictionary['opts_win_size'] = decode_tuple(
+            settings_dictionary['opts_win_size'])
 
         for key in self.options:
             if key not in settings_dictionary:
@@ -405,8 +409,9 @@ class OptionsManager(object):
             temp_options[key] = ''
 
         # Encode normal tuples to string formatted tuples
-        temp_options['main_win_size'] = encode_tuple(temp_options['main_win_size'])
-        temp_options['opts_win_size'] = encode_tuple(temp_options['opts_win_size'])
+        temp_options['main_win_size'] = encode_tuple(
+            temp_options['main_win_size'])
+        temp_options['opts_win_size'] = encode_tuple(
+            temp_options['opts_win_size'])
 
         return temp_options
-

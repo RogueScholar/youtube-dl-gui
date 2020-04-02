@@ -34,7 +34,7 @@ class PipeReader(Thread):
 
     Args:
         queue (Queue.Queue): Python queue to store the output of the subprocess.
-        
+
     Warnings:
         All the operations are based on 'str' types. The caller has to convert
         the queued items back to 'unicode' if he needs to.
@@ -160,7 +160,7 @@ class YoutubeDLDownloader(object):
 
         cmd = self._get_cmd(url, options)
         self._create_process(cmd)
-        
+
         if self._proc is not None:
             self._stderr_reader.attach_filedescriptor(self._proc.stderr)
 
@@ -197,7 +197,8 @@ class YoutubeDLDownloader(object):
             self._return_code = self.ERROR
 
         if self._proc is not None and self._proc.returncode > 0:
-            self._log('Child process exited with non-zero code: {}'.format(self._proc.returncode))
+            self._log(
+                'Child process exited with non-zero code: {}'.format(self._proc.returncode))
 
         self._last_data_hook()
 
@@ -402,7 +403,8 @@ def extract_data(stdout):
 
         # Get path, filename & extension
         if stdout[1] == 'Destination:':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[2:]))
+            path, filename, extension = extract_filename(
+                ' '.join(stdout_with_spaces[2:]))
 
             data_dictionary['path'] = path
             data_dictionary['filename'] = filename
@@ -427,7 +429,7 @@ def extract_data(stdout):
             data_dictionary['playlist_size'] = stdout[5]
 
         # Remove the 'and merged' part from stdout when using ffmpeg to merge the formats
-        if stdout[-3] == 'downloaded' and stdout [-1] == 'merged':
+        if stdout[-3] == 'downloaded' and stdout[-1] == 'merged':
             stdout = stdout[:-2]
             stdout_with_spaces = stdout_with_spaces[:-2]
 
@@ -436,7 +438,8 @@ def extract_data(stdout):
         # Get file already downloaded status
         if stdout[-1] == 'downloaded':
             data_dictionary['status'] = 'Already Downloaded'
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[1:-4]))
+            path, filename, extension = extract_filename(
+                ' '.join(stdout_with_spaces[1:-4]))
 
             data_dictionary['path'] = path
             data_dictionary['filename'] = filename
@@ -464,7 +467,8 @@ def extract_data(stdout):
 
         # Get final extension after merging process
         if stdout[1] == 'Merging':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[4:]))
+            path, filename, extension = extract_filename(
+                ' '.join(stdout_with_spaces[4:]))
 
             data_dictionary['path'] = path
             data_dictionary['filename'] = filename
@@ -472,7 +476,8 @@ def extract_data(stdout):
 
         # Get final extension ffmpeg post process simple (not file merge)
         if stdout[1] == 'Destination:':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[2:]))
+            path, filename, extension = extract_filename(
+                ' '.join(stdout_with_spaces[2:]))
 
             data_dictionary['path'] = path
             data_dictionary['filename'] = filename
@@ -480,7 +485,8 @@ def extract_data(stdout):
 
         # Get final extension after recoding process
         if stdout[1] == 'Converting':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[8:]))
+            path, filename, extension = extract_filename(
+                ' '.join(stdout_with_spaces[8:]))
 
             data_dictionary['path'] = path
             data_dictionary['filename'] = filename
