@@ -1,0 +1,26 @@
+Source: youtube-dl-gui
+Maintainer: Peter J. Mello <admin@petermello.net>
+Section: video
+Priority: optional
+Build-Depends: debhelper-compat (= 12), dh-sequence-python3,
+ python3-all (>= 3.7~), python3 (<< 3.9), python3-setuptools,
+ python3-wxgtk4.0, python3-twodict, python3-mock, xauth, xvfb,
+ youtube-dl
+Standards-Version: 4.5.0
+Homepage: https://github.com/RogueScholar/youtube-dl-gui
+Vcs-Git: https://github.com/RogueScholar/youtube-dl-gui.git
+Vcs-Browser: https://github.com/RogueScholar/youtube-dl-gui
+Testsuite: autopkgtest-pkg-python
+Rules-Requires-Root: no
+X-Python3-Version: >= 3.7, << 3.9
+
+Package: youtube-dl-gui
+Architecture: any
+Depends: youtube-dl, python3-wxgtk4.0, python3-twodict,
+ ${python:Depends}, ${misc:Depends}
+Recommends: ffmpeg
+Description: Graphical UI for the youtube-dl CLI media downloader
+ youtube-dl-gui is a cross-platform, graphical front-end UI for
+ the popular youtube-dl media downloader, written entirely in
+ wxPython. Installing ffmpeg is recommended to add post-processing
+ capabilities to its workflow.
