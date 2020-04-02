@@ -12,12 +12,7 @@ Example:
 """
 
 from .mainframe import MainFrame
-from .utils import (
-    get_config_path,
-    get_locale_file,
-    os_path_exists,
-    YOUTUBEDL_BIN
-)
+from .utils import get_config_path, get_locale_file, os_path_exists, YOUTUBEDL_BIN
 from .optionsmanager import OptionsManager
 from .logmanager import LogManager
 from .formats import load_formats
@@ -56,18 +51,19 @@ config_path = get_config_path()
 opt_manager = OptionsManager(config_path)
 log_manager = None
 
-if opt_manager.options['enable_log']:
-    log_manager = LogManager(config_path, opt_manager.options['log_time'])
+if opt_manager.options["enable_log"]:
+    log_manager = LogManager(config_path, opt_manager.options["log_time"])
 
 # Set gettext before MainFrame import
 # because the GUI strings are class level attributes
 locale_dir = get_locale_file()
 
 try:
-    gettext.translation(__packagename__, locale_dir, [str(
-        opt_manager.options['locale_name'])]).install(unicode=True)
+    gettext.translation(
+        __packagename__, locale_dir, [str(opt_manager.options["locale_name"])]
+    ).install(unicode=True)
 except IOError:
-    opt_manager.options['locale_name'] = 'en_US'
+    opt_manager.options["locale_name"] = "en_US"
     gettext.install(__packagename__)
 
 load_formats()
@@ -75,16 +71,18 @@ load_formats()
 
 def main():
     """The real main. Creates and calls the main app windows. """
-    youtubedl_path = os.path.join(
-        opt_manager.options["youtubedl_path"], YOUTUBEDL_BIN)
+    youtubedl_path = os.path.join(opt_manager.options["youtubedl_path"], YOUTUBEDL_BIN)
 
     app = wx.App()
     frame = MainFrame(opt_manager, log_manager)
     frame.Show()
 
     if opt_manager.options["disable_update"] and not os_path_exists(youtubedl_path):
-        wx.MessageBox(_("Failed to locate youtube-dl and updates are disabled"),
-                      _("Error"), wx.OK | wx.ICON_ERROR)
+        wx.MessageBox(
+            _("Failed to locate youtube-dl and updates are disabled"),
+            _("Error"),
+            wx.OK | wx.ICON_ERROR,
+        )
         frame.close()
 
     app.MainLoop()

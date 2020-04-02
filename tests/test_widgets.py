@@ -12,11 +12,7 @@ try:
     import wx
     import unittest.mock as mock
 
-    from youtube_dl_gui.widgets import (
-        ListBoxWithHeaders,
-        CustomComboBox,
-        ListBoxPopup
-    )
+    from youtube_dl_gui.widgets import ListBoxWithHeaders, CustomComboBox, ListBoxPopup
 except ImportError as error:
     print(error)
     sys.exit(1)
@@ -147,8 +143,7 @@ class TestListBoxWithHeaders(unittest.TestCase):
     @mock.patch("wx.ListBox.Append")
     def test_add_item_with_prefix(self, mock_append):
         self.listbox.add_item("new_item")
-        mock_append.assert_called_once_with(
-            ListBoxWithHeaders.TEXT_PREFIX + "new_item")
+        mock_append.assert_called_once_with(ListBoxWithHeaders.TEXT_PREFIX + "new_item")
 
     @mock.patch("wx.ListBox.Append")
     def test_add_item_without_prefix(self, mock_append):
@@ -158,8 +153,12 @@ class TestListBoxWithHeaders(unittest.TestCase):
     @mock.patch("wx.ListBox.AppendItems")
     def test_add_items_with_prefix(self, mock_append):
         self.listbox.add_items(["new_item1", "new_item2"])
-        mock_append.assert_called_once_with([ListBoxWithHeaders.TEXT_PREFIX + "new_item1",
-                                             ListBoxWithHeaders.TEXT_PREFIX + "new_item2"])
+        mock_append.assert_called_once_with(
+            [
+                ListBoxWithHeaders.TEXT_PREFIX + "new_item1",
+                ListBoxWithHeaders.TEXT_PREFIX + "new_item2",
+            ]
+        )
 
     @mock.patch("wx.ListBox.AppendItems")
     def test_add_items_without_prefix(self, mock_append):
@@ -179,15 +178,15 @@ class TestCustomComboBox(unittest.TestCase):
 
         # Call directly the ListBoxWithHeaders methods
         self.combobox.listbox.GetControl().add_header("Header")
-        self.combobox.listbox.GetControl().add_items(
-            ["item%s" % i for i in range(10)])
+        self.combobox.listbox.GetControl().add_items(["item%s" % i for i in range(10)])
 
     def tearDown(self):
         self.frame.Destroy()
 
     def test_init(self):
         combobox = CustomComboBox(
-            self.frame, -1, "item1", choices=["item0", "item1", "item2"])
+            self.frame, -1, "item1", choices=["item0", "item1", "item2"]
+        )
 
         self.assertEqual(combobox.GetValue().strip(), "item1")
         self.assertEqual(combobox.GetCount(), 3)
@@ -268,5 +267,5 @@ def main():
     unittest.main()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

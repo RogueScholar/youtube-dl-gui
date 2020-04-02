@@ -19,11 +19,7 @@ Note:
 import time
 import os.path
 
-from threading import (
-    Thread,
-    RLock,
-    Lock
-)
+from threading import Thread, RLock, Lock
 
 from wx import CallAfter
 from pubsub import pub
@@ -32,16 +28,10 @@ from .parsers import OptionsParser
 from .updatemanager import UpdateThread
 from .downloaders import YoutubeDLDownloader
 
-from .utils import (
-    YOUTUBEDL_BIN,
-    os_path_exists,
-    format_bytes,
-    to_string,
-    to_bytes
-)
+from .utils import YOUTUBEDL_BIN, os_path_exists, format_bytes, to_string, to_bytes
 
-MANAGER_PUB_TOPIC = 'dlmanager'
-WORKER_PUB_TOPIC = 'dlworker'
+MANAGER_PUB_TOPIC = "dlmanager"
+WORKER_PUB_TOPIC = "dlworker"
 
 _SYNC_LOCK = RLock()
 
@@ -136,7 +126,7 @@ class DownloadItem(object):
             "eta": "-",
             "status": self.stage,
             "playlist_size": "",
-            "playlist_index": ""
+            "playlist_index": "",
         }
 
         self.progress_stats = dict(self.default_values)
@@ -190,20 +180,23 @@ class DownloadItem(object):
             self.path = stats_dict["path"]
 
         if "filesize" in stats_dict:
-            if stats_dict["percent"] == "100%" and len(self.filesizes) < len(self.filenames):
-                filesize = stats_dict["filesize"].lstrip(
-                    "~")  # HLS downloader etc
+            if stats_dict["percent"] == "100%" and len(self.filesizes) < len(
+                self.filenames
+            ):
+                filesize = stats_dict["filesize"].lstrip("~")  # HLS downloader etc
                 self.filesizes.append(to_bytes(filesize))
 
         if "status" in stats_dict:
             # If we are post processing try to calculate the size of
             # the output file since youtube-dl does not
-            if stats_dict["status"] == self.ACTIVE_STAGES[2] and len(self.filesizes) == 2:
+            if (
+                stats_dict["status"] == self.ACTIVE_STAGES[2]
+                and len(self.filesizes) == 2
+            ):
                 post_proc_filesize = self.filesizes[0] + self.filesizes[1]
 
                 self.filesizes.append(post_proc_filesize)
-                self.progress_stats["filesize"] = format_bytes(
-                    post_proc_filesize)
+                self.progress_stats["filesize"] = format_bytes(post_proc_filesize)
 
             self._set_stage(stats_dict["status"])
 
@@ -339,7 +332,10 @@ class DownloadList(object):
         return len(self._items_list)
 
     def _swap(self, index1, index2):
-        self._items_list[index1], self._items_list[index2] = self._items_list[index2], self._items_list[index1]
+        self._items_list[index1], self._items_list[index2] = (
+            self._items_list[index2],
+            self._items_list[index1],
+        )
 
 
 class DownloadManager(Thread):
@@ -375,8 +371,9 @@ class DownloadManager(Thread):
         # Init the custom workers thread pool
         log_lock = None if log_manager is None else Lock()
         wparams = (opt_manager, self._youtubedl_path(), log_manager, log_lock)
-        self._workers = [Worker(*wparams)
-                         for _ in range(opt_manager.options["workers_number"])]
+        self._workers = [
+            Worker(*wparams) for _ in range(opt_manager.options["workers_number"])
+        ]
 
         self.start()
 
@@ -423,9 +420,9 @@ class DownloadManager(Thread):
         self._time_it_took = time.time() - self._time_it_took
 
         if not self._running:
-            self._talk_to_gui('closed')
+            self._talk_to_gui("closed")
         else:
-            self._talk_to_gui('finished')
+            self._talk_to_gui("finished")
 
     def active(self):
         """Returns number of active items.
@@ -452,7 +449,7 @@ class DownloadManager(Thread):
             clean up task in the run() method.
 
         """
-        self._talk_to_gui('closing')
+        self._talk_to_gui("closing")
         self._running = False
 
     def add_url(self, url):
@@ -477,9 +474,9 @@ class DownloadManager(Thread):
             data keys see __init__() under the Worker class.
 
         """
-        if 'index' in data:
+        if "index" in data:
             for worker in self._workers:
-                if worker.has_index(data['index']):
+                if worker.has_index(data["index"]):
                     worker.update_data(data)
 
     def _talk_to_gui(self, data):
@@ -502,9 +499,13 @@ class DownloadManager(Thread):
 
     def _check_youtubedl(self):
         """Check if youtube-dl binary exists. If not try to download it. """
-        if not os_path_exists(self._youtubedl_path()) and self.parent.update_thread is None:
+        if (
+            not os_path_exists(self._youtubedl_path())
+            and self.parent.update_thread is None
+        ):
             self.parent.update_thread = UpdateThread(
-                self.opt_manager.options['youtubedl_path'], True)
+                self.opt_manager.options["youtubedl_path"], True
+            )
             self.parent.update_thread.join()
             self.parent.update_thread = None
 
@@ -525,7 +526,7 @@ class DownloadManager(Thread):
 
     def _youtubedl_path(self):
         """Returns the path to youtube-dl binary. """
-        path = self.opt_manager.options['youtubedl_path']
+        path = self.opt_manager.options["youtubedl_path"]
         path = os.path.join(path, YOUTUBEDL_BIN)
         return path
 
@@ -564,7 +565,8 @@ class Worker(Thread):
         self.log_lock = log_lock
 
         self._downloader = YoutubeDLDownloader(
-            youtubedl, self._data_hook, self._log_data)
+            youtubedl, self._data_hook, self._log_data
+        )
         self._options_parser = OptionsParser()
         self._successful = 0
         self._running = True
@@ -573,33 +575,34 @@ class Worker(Thread):
         self._wait_for_reply = False
 
         self._data = {
-            'playlist_index': None,
-            'playlist_size': None,
-            'new_filename': None,
-            'extension': None,
-            'filesize': None,
-            'filename': None,
-            'percent': None,
-            'status': None,
-            'index': None,
-            'speed': None,
-            'path': None,
-            'eta': None,
-            'url': None
+            "playlist_index": None,
+            "playlist_size": None,
+            "new_filename": None,
+            "extension": None,
+            "filesize": None,
+            "filename": None,
+            "percent": None,
+            "status": None,
+            "index": None,
+            "speed": None,
+            "path": None,
+            "eta": None,
+            "url": None,
         }
 
         self.start()
 
     def run(self):
         while self._running:
-            if self._data['url'] is not None:
+            if self._data["url"] is not None:
                 # options = self._options_parser.parse(self.opt_manager.options)
-                ret_code = self._downloader.download(
-                    self._data['url'], self._options)
+                ret_code = self._downloader.download(self._data["url"], self._options)
 
-                if (ret_code == YoutubeDLDownloader.OK or
-                        ret_code == YoutubeDLDownloader.ALREADY or
-                        ret_code == YoutubeDLDownloader.WARNING):
+                if (
+                    ret_code == YoutubeDLDownloader.OK
+                    or ret_code == YoutubeDLDownloader.ALREADY
+                    or ret_code == YoutubeDLDownloader.WARNING
+                ):
                     self._successful += 1
 
                 # Ask GUI for name updates
@@ -626,9 +629,9 @@ class Worker(Thread):
                 download process.
 
         """
-        self._data['url'] = url
+        self._data["url"] = url
         self._options = options
-        self._data['index'] = object_id
+        self._data["index"] = object_id
 
     def stop_download(self):
         """Stop the download process of the worker. """
@@ -641,11 +644,11 @@ class Worker(Thread):
 
     def available(self):
         """Return True if the worker has no job else False. """
-        return self._data['url'] is None
+        return self._data["url"] is None
 
     def has_index(self, index):
         """Return True if index is equal to self._data['index'] else False. """
-        return self._data['index'] == index
+        return self._data["index"] == index
 
     def update_data(self, data):
         """Update self._data from the given data. """
@@ -714,7 +717,7 @@ class Worker(Thread):
 
         # if len(temp_dict):
         # self._talk_to_gui('send', temp_dict)
-        self._talk_to_gui('send', data)
+        self._talk_to_gui("send", data)
 
     def _talk_to_gui(self, signal, data):
         """Communicate with the GUI using wxCallAfter and wxPublisher.
@@ -748,9 +751,9 @@ class Worker(Thread):
             ('receive', {'index': <item_row>, 'source': 'source_key', 'dest': 'destination_key'})
 
         """
-        data['index'] = self._data['index']
+        data["index"] = self._data["index"]
 
-        if signal == 'receive':
+        if signal == "receive":
             self._wait_for_reply = True
 
         CallAfter(pub.sendMessage, WORKER_PUB_TOPIC, msg=(signal, data))

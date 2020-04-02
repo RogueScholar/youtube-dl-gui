@@ -29,5 +29,5 @@ if __package__ is None and not hasattr(sys, "frozen"):
     PATH = os.path.realpath(os.path.abspath(__file__))
     sys.path.append(os.path.dirname(os.path.dirname(PATH)))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     youtube_dl_gui.main()

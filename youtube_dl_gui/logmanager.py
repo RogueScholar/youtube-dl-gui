@@ -3,11 +3,7 @@
 import os.path
 from time import strftime
 
-from .utils import (
-    os_path_exists,
-    get_encoding,
-    check_path
-)
+from .utils import os_path_exists, get_encoding, check_path
 
 
 class LogManager(object):
@@ -50,7 +46,7 @@ class LogManager(object):
 
     def clear(self):
         """Clear log file. """
-        self._write('', 'w')
+        self._write("", "w")
 
     def log(self, data):
         """Log data to the log file.
@@ -60,7 +56,7 @@ class LogManager(object):
 
         """
         if isinstance(data, str):
-            self._write(data + '\n', 'a')
+            self._write(data + "\n", "a")
 
     def _write(self, data, mode):
         """Write data to the log file.
@@ -75,18 +71,17 @@ class LogManager(object):
         check_path(self.config_path)
 
         with open(self.log_file, mode) as log:
-            if mode == 'a' and self.add_time:
-                msg = self.TIME_TEMPLATE.format(
-                    time=strftime('%c'), error_msg=data)
+            if mode == "a" and self.add_time:
+                msg = self.TIME_TEMPLATE.format(time=strftime("%c"), error_msg=data)
             else:
                 msg = data
 
-            log.write(str(msg.encode(self._encoding, 'ignore')))
+            log.write(str(msg.encode(self._encoding, "ignore")))
 
     def _init_log(self):
         """Initialize the log file if not exist. """
         if not os_path_exists(self.log_file):
-            self._write('', 'w')
+            self._write("", "w")
 
     def _auto_clear_log(self):
         """Auto clear the log file. """

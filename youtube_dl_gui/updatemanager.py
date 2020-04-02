@@ -13,12 +13,9 @@ from urllib.request import urlopen, URLError, HTTPError
 from wx import CallAfter
 from pubsub import pub
 
-from .utils import (
-    YOUTUBEDL_BIN,
-    check_path
-)
+from .utils import YOUTUBEDL_BIN, check_path
 
-UPDATE_PUB_TOPIC = 'update'
+UPDATE_PUB_TOPIC = "update"
 
 
 class UpdateThread(Thread):
@@ -39,7 +36,7 @@ class UpdateThread(Thread):
 
     """
 
-    LATEST_YOUTUBE_DL = 'https://yt-dl.org/downloads/latest/'
+    LATEST_YOUTUBE_DL = "https://yt-dl.org/downloads/latest/"
     DOWNLOAD_TIMEOUT = 10
 
     def __init__(self, download_path, quiet=False):
@@ -49,7 +46,7 @@ class UpdateThread(Thread):
         self.start()
 
     def run(self):
-        self._talk_to_gui('download')
+        self._talk_to_gui("download")
 
         source_file = self.LATEST_YOUTUBE_DL + YOUTUBEDL_BIN
         destination_file = os.path.join(self.download_path, YOUTUBEDL_BIN)
@@ -59,15 +56,15 @@ class UpdateThread(Thread):
         try:
             stream = urlopen(source_file, timeout=self.DOWNLOAD_TIMEOUT)
 
-            with open(destination_file, 'wb') as dest_file:
+            with open(destination_file, "wb") as dest_file:
                 dest_file.write(stream.read())
 
-            self._talk_to_gui('correct')
+            self._talk_to_gui("correct")
         except (HTTPError, URLError, IOError) as error:
-            self._talk_to_gui('error', str(error))
+            self._talk_to_gui("error", str(error))
 
         if not self.quiet:
-            self._talk_to_gui('finish')
+            self._talk_to_gui("finish")
 
     def _talk_to_gui(self, signal, data=None):
         """Communicate with the GUI using wxCallAfter and wxPublisher.

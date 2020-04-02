@@ -69,8 +69,9 @@ class TestBuildCommand(unittest.TestCase):
 
         self.options = ["-o", None, "-f", "mp4", "--ignore-config"]
 
-        self.result = "{{ydl_bin}} -o \"{{tmpl}}\" -f mp4 --ignore-config \"{url}\"".format(
-            url=self.url)
+        self.result = '{{ydl_bin}} -o "{{tmpl}}" -f mp4 --ignore-config "{url}"'.format(
+            url=self.url
+        )
 
     def run_tests(self, ydl_bin, tmpl):
         """Run the main test.
@@ -106,6 +107,7 @@ class TestBuildCommand(unittest.TestCase):
         tmpl = "C:\\downloads\\%(id)s.%(ext)s"
 
         self.run_tests("youtube-dl.exe", tmpl)
+
 
 # removed TestConvertItem for Python 3, as str is unicode
 

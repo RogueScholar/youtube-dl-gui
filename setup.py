@@ -57,7 +57,7 @@ from youtube_dl_gui import (
     __projecturl__,
     __description__,
     __packagename__,
-    __descriptionfull__
+    __descriptionfull__,
 )
 from distutils import cmd, log
 from distutils.core import setup
@@ -102,8 +102,10 @@ class BuildBin(cmd.Command):
         if not os.path.exists(self.scripts_dir):
             os.makedirs(self.scripts_dir)
 
-        copyfile(os.path.join(__packagename__, "__main__.py"),
-                 os.path.join(self.scripts_dir, "youtube-dl-gui"))
+        copyfile(
+            os.path.join(__packagename__, "__main__.py"),
+            os.path.join(self.scripts_dir, "youtube-dl-gui"),
+        )
 
 
 class BuildTranslations(cmd.Command):
@@ -121,7 +123,8 @@ class BuildTranslations(cmd.Command):
             self.exec_name = "msgfmt"
 
         self.search_pattern = os.path.join(
-            __packagename__, "locale", "*", "LC_MESSAGES", "youtube_dl_gui.po")
+            __packagename__, "locale", "*", "LC_MESSAGES", "youtube_dl_gui.po"
+        )
 
     def run(self):
         for po_file in glob.glob(self.search_pattern):
@@ -132,20 +135,17 @@ class BuildTranslations(cmd.Command):
                 call([self.exec_name, "-o", mo_file, po_file])
             except OSError:
                 log.error(
-                    "could not locate file '{}', exiting...".format(self.exec_name))
+                    "could not locate file '{}', exiting...".format(self.exec_name)
+                )
                 sys.exit(1)
 
 
 class Build(build):
     """Overwrite the default 'build' behaviour."""
 
-    sub_commands = [
-        ("build_bin", None),
-        ("build_trans", None)
-    ] + build.sub_commands
+    sub_commands = [("build_bin", None), ("build_trans", None)] + build.sub_commands
 
-    build.user_options.append(
-        ("no-updates", None, "build with updates disabled"))
+    build.user_options.append(("no-updates", None, "build with updates disabled"))
 
     def initialize_options(self):
         build.initialize_options(self)
@@ -183,11 +183,7 @@ class Build(build):
 
 
 # Overwrite cmds
-cmdclass = {
-    "build": Build,
-    "build_bin": BuildBin,
-    "build_trans": BuildTranslations
-}
+cmdclass = {"build": Build, "build_bin": BuildBin, "build_trans": BuildTranslations}
 
 
 def linux_setup():
@@ -210,15 +206,10 @@ def linux_setup():
     )
 
     # Add man page
-    data_files.append(
-        ("share/man/man1", ["youtube-dl-gui.1"])
-    )
+    data_files.append(("share/man/man1", ["youtube-dl-gui.1"]))
 
     # Add pixmaps icons (*.png) & i18n files
-    package_data[__packagename__] = [
-        "data/pixmaps/*.png",
-        "locale/*/LC_MESSAGES/*.mo"
-    ]
+    package_data[__packagename__] = ["data/pixmaps/*.png", "locale/*/LC_MESSAGES/*.mo"]
 
     # Add scripts
     scripts.append("build/_scripts/youtube-dl-gui")
@@ -226,7 +217,7 @@ def linux_setup():
     setup_params = {
         "scripts": scripts,
         "data_files": data_files,
-        "package_data": package_data
+        "package_data": package_data,
     }
 
     return setup_params
@@ -239,12 +230,10 @@ def windows_setup():
         # Add pixmaps icons (*.png) & i18n files
         package_data[__packagename__] = [
             "data\\pixmaps\\*.png",
-            "locale\\*\\LC_MESSAGES\\*.mo"
+            "locale\\*\\LC_MESSAGES\\*.mo",
         ]
 
-        setup_params = {
-            "package_data": package_data
-        }
+        setup_params = {"package_data": package_data}
 
         return setup_params
 
@@ -257,21 +246,25 @@ def windows_setup():
         dependencies = [
             "C:\\Windows\\System32\\ffmpeg.exe",
             "C:\\Windows\\System32\\ffprobe.exe",
-            "C:\\python27\\DLLs\\MSVCP90.dll"
+            "C:\\python27\\DLLs\\MSVCP90.dll",
         ]
 
         options = {
-            "includes": ["wx.lib.pubsub.*",
-                         "wx.lib.pubsub.core.*",
-                         "wx.lib.pubsub.core.arg1.*"]
+            "includes": [
+                "wx.lib.pubsub.*",
+                "wx.lib.pubsub.core.*",
+                "wx.lib.pubsub.core.arg1.*",
+            ]
         }
         #############################################
 
         # Add py2exe deps & pixmaps icons (*.png)
-        data_files.extend([
-            ("", dependencies),
-            ("data\\pixmaps", glob.glob("youtube_dl_gui\\data\\pixmaps\\*.png")),
-        ])
+        data_files.extend(
+            [
+                ("", dependencies),
+                ("data\\pixmaps", glob.glob("youtube_dl_gui\\data\\pixmaps\\*.png")),
+            ]
+        )
 
         # We have to manually add the translation files since py2exe cant do it
         for lang in os.listdir("youtube_dl_gui\\locale"):
@@ -281,15 +274,19 @@ def windows_setup():
             data_files.append((dst, [src]))
 
         # Add GUI executable details
-        windows.append({
-            "script": "build\\_scripts\\youtube-dl-gui",
-            "icon_resources": [(0, "youtube_dl_gui\\data\\pixmaps\\youtube-dl-gui.ico")]
-        })
+        windows.append(
+            {
+                "script": "build\\_scripts\\youtube-dl-gui",
+                "icon_resources": [
+                    (0, "youtube_dl_gui\\data\\pixmaps\\youtube-dl-gui.ico")
+                ],
+            }
+        )
 
         setup_params = {
             "windows": windows,
             "data_files": data_files,
-            "options": {"py2exe": options}
+            "options": {"py2exe": options},
         }
 
         return setup_params
@@ -316,6 +313,5 @@ setup(
     long_description=__descriptionfull__,
     packages=[__packagename__],
     cmdclass=cmdclass,
-
     **params
 )

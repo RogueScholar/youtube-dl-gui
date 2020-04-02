@@ -35,13 +35,23 @@ class ListBoxWithHeaders(wx.ListBox):
         wx.EVT_RIGHT_DOWN,
         wx.EVT_RIGHT_DCLICK,
         wx.EVT_MIDDLE_DOWN,
-        wx.EVT_MIDDLE_DCLICK
+        wx.EVT_MIDDLE_DCLICK,
     ]
 
-    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, choices=[], style=0, validator=wx.DefaultValidator, name=NAME):
+    def __init__(
+        self,
+        parent,
+        id=wx.ID_ANY,
+        pos=wx.DefaultPosition,
+        size=wx.DefaultSize,
+        choices=[],
+        style=0,
+        validator=wx.DefaultValidator,
+        name=NAME,
+    ):
         super(ListBoxWithHeaders, self).__init__(
-            parent, id, pos, size, [], style, validator, name)
+            parent, id, pos, size, [], style, validator, name
+        )
         self.__headers = set()
 
         # Ignore all key events i'm bored to handle the header selection
@@ -75,8 +85,8 @@ class ListBoxWithHeaders(wx.ListBox):
         return self.TEXT_PREFIX + string
 
     def _remove_prefix(self, string):
-        if string[:len(self.TEXT_PREFIX)] == self.TEXT_PREFIX:
-            return string[len(self.TEXT_PREFIX):]
+        if string[: len(self.TEXT_PREFIX)] == self.TEXT_PREFIX:
+            return string[len(self.TEXT_PREFIX) :]
         return string
 
     # wx.ListBox methods
@@ -187,7 +197,7 @@ class ListBoxPopup(wx.PopupTransientWindow):
     EVENTS_TABLE = {
         "EVT_COMBOBOX": crt_command_event(wx.EVT_COMBOBOX),
         "EVT_COMBOBOX_DROPDOWN": crt_command_event(wx.EVT_COMBOBOX_DROPDOWN),
-        "EVT_COMBOBOX_CLOSEUP": crt_command_event(wx.EVT_COMBOBOX_CLOSEUP)
+        "EVT_COMBOBOX_CLOSEUP": crt_command_event(wx.EVT_COMBOBOX_CLOSEUP),
     }
 
     def __init__(self, parent=None, flags=wx.BORDER_NONE):
@@ -267,6 +277,7 @@ class CustomComboBox(wx.Panel):
         NAME (string): Default name for the name argument of the __init__.
 
     """
+
     # NOTE wx.ComboBox does not support EVT_MOTION inside the popup
     # NOTE Tried with ComboCtrl but i was not able to draw the button
 
@@ -274,19 +285,27 @@ class CustomComboBox(wx.Panel):
 
     NAME = "customComboBox"
 
-    def __init__(self, parent, id=wx.ID_ANY, value="", pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, choices=[], style=0, validator=wx.DefaultValidator, name=NAME):
+    def __init__(
+        self,
+        parent,
+        id=wx.ID_ANY,
+        value="",
+        pos=wx.DefaultPosition,
+        size=wx.DefaultSize,
+        choices=[],
+        style=0,
+        validator=wx.DefaultValidator,
+        name=NAME,
+    ):
         super(CustomComboBox, self).__init__(parent, id, pos, size, 0, name)
 
         assert style == self.CB_READONLY or style == 0
 
         # Create components
-        self.textctrl = wx.TextCtrl(
-            self, wx.ID_ANY, style=style, validator=validator)
+        self.textctrl = wx.TextCtrl(self, wx.ID_ANY, style=style, validator=validator)
         tc_height = self.textctrl.GetSize()[1]
 
-        self.button = wx.Button(self, wx.ID_ANY, "▾",
-                                size=(tc_height, tc_height))
+        self.button = wx.Button(self, wx.ID_ANY, "▾", size=(tc_height, tc_height))
 
         # Create the ListBoxPopup in two steps
         self.listbox = ListBoxPopup(self)
@@ -303,8 +322,7 @@ class CustomComboBox(wx.Panel):
         self.button.Bind(wx.EVT_BUTTON, self._on_button)
 
         for event in ListBoxPopup.EVENTS_TABLE.values():
-            self.listbox.Bind(wx.PyEventBinder(
-                event.GetEventType()), self._propagate)
+            self.listbox.Bind(wx.PyEventBinder(event.GetEventType()), self._propagate)
 
         # Append items since the ListBoxPopup does not have the 'choices' arg
         self.listbox.GetControl().AppendItems(choices)
@@ -334,7 +352,8 @@ class CustomComboBox(wx.Panel):
 
         available_height = screen_height - (me_y_axis + tc_height)
         sug_width, sug_height = self.listbox.GetAdjustedSize(
-            me_width, tc_height, available_height)
+            me_width, tc_height, available_height
+        )
 
         return me_width, sug_height
 
