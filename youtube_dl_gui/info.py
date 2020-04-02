@@ -5,7 +5,6 @@ Note:
     but we keep them here to keep the code clean.
 
 """
-
 from __future__ import unicode_literals
 
 __author__ = "Sotiris Papadopoulos"

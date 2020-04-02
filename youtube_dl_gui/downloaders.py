@@ -8,17 +8,15 @@ Note:
     as a stand alone module for downloading videos.
 
 """
-
-import re
-import os
-import sys
 import locale
+import os
+import re
 import signal
 import subprocess
-
-from time import sleep
+import sys
 from queue import Queue
 from threading import Thread
+from time import sleep
 
 from .utils import convert_item
 

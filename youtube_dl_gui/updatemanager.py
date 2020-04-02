@@ -5,15 +5,17 @@ Attributes:
         UpdateThread thread.
 
 """
-
 import os.path
 from threading import Thread
-from urllib.request import urlopen, URLError, HTTPError
+from urllib.request import HTTPError
+from urllib.request import URLError
+from urllib.request import urlopen
 
-from wx import CallAfter
 from pubsub import pub
+from wx import CallAfter
 
-from .utils import YOUTUBEDL_BIN, check_path
+from .utils import check_path
+from .utils import YOUTUBEDL_BIN
 
 UPDATE_PUB_TOPIC = "update"
 

@@ -1,5 +1,4 @@
 """Youtubedlg module responsible for the options window. """
-
 import os
 from gettext import gettext as _
 
@@ -8,11 +7,14 @@ from wx import ComboBox
 from wx.adv import BitmapComboBox
 from wx.lib.art import flagart
 
-from .utils import TwoWayOrderedDict as twodict, os_path_exists, get_icon_file, os_sep
-
+from .formats import AUDIO_FORMATS
+from .formats import OUTPUT_FORMATS
+from .formats import VIDEO_FORMATS
 from .info import __appname__
-
-from .formats import OUTPUT_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS
+from .utils import get_icon_file
+from .utils import os_path_exists
+from .utils import os_sep
+from .utils import TwoWayOrderedDict as twodict
 
 
 # REFACTOR Move all formats, etc to formats.py

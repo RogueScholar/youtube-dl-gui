@@ -1,9 +1,10 @@
 """Youtubedlg module responsible for handling the log stuff. """
-
 import os.path
 from time import strftime
 
-from .utils import os_path_exists, get_encoding, check_path
+from .utils import check_path
+from .utils import get_encoding
+from .utils import os_path_exists
 
 
 class LogManager(object):

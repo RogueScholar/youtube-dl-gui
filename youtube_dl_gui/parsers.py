@@ -1,8 +1,8 @@
 """Youtubedlg module responsible for parsing the options. """
-
 import os.path
 
-from .utils import remove_shortcuts, to_string
+from .utils import remove_shortcuts
+from .utils import to_string
 
 
 class OptionHolder(object):

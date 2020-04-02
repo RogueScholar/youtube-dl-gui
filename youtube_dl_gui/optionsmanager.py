@@ -1,18 +1,15 @@
 """Youtubedlg module to handle settings. """
-
-import os
 import json
+import os
 
-from .utils import (
-    os_path_expanduser,
-    os_path_exists,
-    encode_tuple,
-    decode_tuple,
-    check_path,
-    get_default_lang,
-)
-
-from .formats import OUTPUT_FORMATS, FORMATS
+from .formats import FORMATS
+from .formats import OUTPUT_FORMATS
+from .utils import check_path
+from .utils import decode_tuple
+from .utils import encode_tuple
+from .utils import get_default_lang
+from .utils import os_path_exists
+from .utils import os_path_expanduser
 
 
 class OptionsManager(object):

@@ -6,13 +6,12 @@ Attributes:
     YOUTUBEDL_BIN (string): Youtube-dl binary filename.
 
 """
-
-import os
-import sys
 import json
-import math
 import locale
+import math
+import os
 import subprocess
+import sys
 
 try:
     from twodict import TwoWayOrderedDict

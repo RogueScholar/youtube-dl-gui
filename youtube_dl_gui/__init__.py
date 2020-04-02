@@ -10,16 +10,19 @@ Example:
         youtube_dl_gui.main()
 
 """
-
-from .mainframe import MainFrame
-from .utils import get_config_path, get_locale_file, os_path_exists, YOUTUBEDL_BIN
-from .optionsmanager import OptionsManager
-from .logmanager import LogManager
-from .formats import load_formats
-import sys
 import gettext
 import os.path
+import sys
 from gettext import gettext as _
+
+from .formats import load_formats
+from .logmanager import LogManager
+from .mainframe import MainFrame
+from .optionsmanager import OptionsManager
+from .utils import get_config_path
+from .utils import get_locale_file
+from .utils import os_path_exists
+from .utils import YOUTUBEDL_BIN
 
 try:
     import wx

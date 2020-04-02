@@ -1,5 +1,4 @@
 """Youtubedlg module responsible for the main app window. """
-
 import os
 from gettext import gettext as _
 
@@ -8,32 +7,31 @@ from pubsub import pub
 from wx import adv
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
-from .downloadmanager import (
-    DownloadItem,
-    DownloadList,
-    DownloadManager,
-    MANAGER_PUB_TOPIC,
-    WORKER_PUB_TOPIC,
-)
-from .formats import AUDIO_FORMATS, DEFAULT_FORMATS, FORMATS, VIDEO_FORMATS
-from .info import (
-    __appname__,
-    __author__,
-    __descriptionfull__,
-    __licensefull__,
-    __projecturl__,
-)
-from .optionsframe import LogGUI, OptionsFrame
+from .downloadmanager import DownloadItem
+from .downloadmanager import DownloadList
+from .downloadmanager import DownloadManager
+from .downloadmanager import MANAGER_PUB_TOPIC
+from .downloadmanager import WORKER_PUB_TOPIC
+from .formats import AUDIO_FORMATS
+from .formats import DEFAULT_FORMATS
+from .formats import FORMATS
+from .formats import VIDEO_FORMATS
+from .info import __appname__
+from .info import __author__
+from .info import __descriptionfull__
+from .info import __licensefull__
+from .info import __projecturl__
+from .optionsframe import LogGUI
+from .optionsframe import OptionsFrame
 from .parsers import OptionsParser
-from .updatemanager import UPDATE_PUB_TOPIC, UpdateThread
-from .utils import (
-    build_command,
-    get_icon_file,
-    get_pixmaps_dir,
-    get_time,
-    open_file,
-    shutdown_sys,
-)
+from .updatemanager import UPDATE_PUB_TOPIC
+from .updatemanager import UpdateThread
+from .utils import build_command
+from .utils import get_icon_file
+from .utils import get_pixmaps_dir
+from .utils import get_time
+from .utils import open_file
+from .utils import shutdown_sys
 from .version import __version__
 from .widgets import CustomComboBox
 

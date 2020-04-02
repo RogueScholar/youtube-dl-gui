@@ -1,7 +1,6 @@
 """Contains test cases for the widgets.py module."""
-
-import sys
 import os.path
+import sys
 import unittest
 
 PATH = os.path.realpath(os.path.abspath(__file__))

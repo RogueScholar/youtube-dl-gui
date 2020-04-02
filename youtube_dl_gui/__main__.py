@@ -18,8 +18,8 @@ Example:
         $ youtube-dl-gui
 
 """
-
 import sys
+
 import youtube_dl_gui
 
 if __package__ is None and not hasattr(sys, "frozen"):

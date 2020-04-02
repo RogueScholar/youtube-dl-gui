@@ -15,20 +15,23 @@ Note:
     thats the job of the 'downloaders' module.
 
 """
-
-import time
 import os.path
+import time
+from threading import Lock
+from threading import RLock
+from threading import Thread
 
-from threading import Thread, RLock, Lock
-
-from wx import CallAfter
 from pubsub import pub
+from wx import CallAfter
 
+from .downloaders import YoutubeDLDownloader
 from .parsers import OptionsParser
 from .updatemanager import UpdateThread
-from .downloaders import YoutubeDLDownloader
-
-from .utils import YOUTUBEDL_BIN, os_path_exists, format_bytes, to_string, to_bytes
+from .utils import format_bytes
+from .utils import os_path_exists
+from .utils import to_bytes
+from .utils import to_string
+from .utils import YOUTUBEDL_BIN
 
 MANAGER_PUB_TOPIC = "dlmanager"
 WORKER_PUB_TOPIC = "dlworker"

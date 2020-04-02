@@ -47,27 +47,25 @@ Notes:
         * Run setup
 
 """
-
-from youtube_dl_gui import (
-    __author__,
-    __appname__,
-    __contact__,
-    __version__,
-    __license__,
-    __projecturl__,
-    __description__,
-    __packagename__,
-    __descriptionfull__,
-)
-from distutils import cmd, log
-from distutils.core import setup
-from distutils.command.build import build
-
+import glob
 import os
 import sys
-import glob
+from distutils import cmd
+from distutils import log
+from distutils.command.build import build
+from distutils.core import setup
 from shutil import copyfile
 from subprocess import call
+
+from youtube_dl_gui import __appname__
+from youtube_dl_gui import __author__
+from youtube_dl_gui import __contact__
+from youtube_dl_gui import __description__
+from youtube_dl_gui import __descriptionfull__
+from youtube_dl_gui import __license__
+from youtube_dl_gui import __packagename__
+from youtube_dl_gui import __projecturl__
+from youtube_dl_gui import __version__
 
 PY2EXE = len(sys.argv) >= 2 and sys.argv[1] == "py2exe"
 
