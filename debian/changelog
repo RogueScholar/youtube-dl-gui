@@ -1,0 +1,34 @@
+youtube-dl-gui (1.0.0-1) unstable; urgency=medium
+
+  * Project ported to Python 3
+
+ -- Peter J. Mello <admin@petermello.net>  Thu, 02 Apr 2020 09:50:17 -0700
+
+youtube-dl-gui (0.4.1-1) unstable; urgency=medium
+
+  * Build of git commit c5c18e55cb7e04fb6d6d8e64024a7dbac1f6b431
+
+ -- Martin Wimpress <martin.wimpress@canonical.com>  Wed, 10 Apr 2019 00:05:02 +0100
+
+youtube-dl-gui (0.4.0-1) unstable; urgency=medium
+
+  * Initial Debian package release (Closes: #753350)
+  * Build for python2, not python3 (needs python3-wxgtk3.0)
+  * Add youtube-dl-gui.desktop. Thanks, nodiscc <nodiscc@gmail.com>.
+
+ -- Félix Sipma <felix+debian@gueux.org>  Tue, 09 Jan 2018 14:28:07 +0100
+
+youtube-dl-gui (0.3.8-1) unstable; urgency=medium
+
+  * New upstream tagged GitHub release
+  * Center options frame in dialog box
+  * Add MacOS support for installation via Homebrew
+  * Add pt_PT localization file by Cleiton Meurer <cleitonme@gmail.com>
+
+ -- Sotiris Papadopoulos <ytubedlg@gmail.com>  Sun, 24 May 2015 05:17:42 -0700
+
+youtube-dl-gui (0.3.7-1) unstable; urgency=medium
+
+  * First tagged GitHub release
+
+ -- Sotiris Papadopoulos <ytubedlg@gmail.com>  Wed, 01 Apr 2015 08:26:52 -0700
