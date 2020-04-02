@@ -1,27 +1,20 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 """Contains test cases for the DownloadList object."""
-
-from __future__ import unicode_literals
-
-import sys
 import os.path
+import sys
 import unittest
 
 PATH = os.path.realpath(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(os.path.dirname(PATH)))
 
 try:
-    import mock
+    import unittest.mock as mock
     from youtube_dl_gui.downloadmanager import DownloadList, synchronized
 except ImportError as error:
-    print error
+    print(error)
     sys.exit(1)
 
 
 class TestInit(unittest.TestCase):
-
     """Test case for the DownloadList init."""
 
     def test_init(self):
@@ -43,7 +36,6 @@ class TestInit(unittest.TestCase):
 
 
 class TestInsert(unittest.TestCase):
-
     """Test case for the DownloadList insert method."""
 
     def test_insert(self):
@@ -57,18 +49,24 @@ class TestInsert(unittest.TestCase):
 
 
 class TestRemove(unittest.TestCase):
-
     """Test case for the DownloadList remove method."""
 
     def setUp(self):
-        self.mocks = [mock.Mock(object_id=0), mock.Mock(object_id=1), mock.Mock(object_id=2)]
+        self.mocks = [
+            mock.Mock(object_id=0),
+            mock.Mock(object_id=1),
+            mock.Mock(object_id=2),
+        ]
         self.dlist = DownloadList(self.mocks)
 
     def test_remove(self):
         self.assertTrue(self.dlist.remove(1))
 
         self.assertEqual(self.dlist._items_list, [0, 2])
-        self.assertEqual(self.dlist._items_dict, {0: self.mocks[0], 2: self.mocks[2]})
+        self.assertEqual(self.dlist._items_dict, {
+            0: self.mocks[0],
+            2: self.mocks[2]
+        })
 
     def test_remove_not_exist(self):
         self.assertRaises(KeyError, self.dlist.remove, 3)
@@ -78,17 +76,25 @@ class TestRemove(unittest.TestCase):
 
         self.assertFalse(self.dlist.remove(1))
         self.assertEqual(self.dlist._items_list, [0, 1, 2])
-        self.assertEqual(self.dlist._items_dict, {0: self.mocks[0], 1: self.mocks[1], 2: self.mocks[2]})
+        self.assertEqual(
+            self.dlist._items_dict,
+            {
+                0: self.mocks[0],
+                1: self.mocks[1],
+                2: self.mocks[2]
+            },
+        )
 
 
 class TestFetchNext(unittest.TestCase):
-
     """Test case for the DownloadList fetch_next method."""
 
     def test_fetch_next(self):
         items_count = 3
 
-        mocks = [mock.Mock(object_id=i, stage="Queued") for i in range(items_count)]
+        mocks = [
+            mock.Mock(object_id=i, stage="Queued") for i in range(items_count)
+        ]
 
         dlist = DownloadList(mocks)
 
@@ -112,7 +118,6 @@ class TestFetchNext(unittest.TestCase):
 
 
 class TestMoveUp(unittest.TestCase):
-
     """Test case for the DownloadList move_up method."""
 
     def setUp(self):
@@ -132,7 +137,6 @@ class TestMoveUp(unittest.TestCase):
 
 
 class TestMoveDown(unittest.TestCase):
-
     """Test case for the DownloadList move_down method."""
 
     def setUp(self):
@@ -152,7 +156,6 @@ class TestMoveDown(unittest.TestCase):
 
 
 class TestGetItem(unittest.TestCase):
-
     """Test case for the DownloadList get_item method."""
 
     def test_get_item(self):
@@ -168,7 +171,6 @@ class TestGetItem(unittest.TestCase):
 
 
 class TestGetLength(unittest.TestCase):
-
     """Test case for the DownloadList __len__ method."""
 
     def test_get_length(self):
@@ -181,7 +183,6 @@ class TestGetLength(unittest.TestCase):
 
 
 class TestHasItem(unittest.TestCase):
-
     """Test case for the DownloadList has_item method."""
 
     def setUp(self):
@@ -196,7 +197,6 @@ class TestHasItem(unittest.TestCase):
 
 
 class TestGetItems(unittest.TestCase):
-
     """Test case for the DownloadList get_items method."""
 
     def test_get_items(self):
@@ -211,7 +211,6 @@ class TestGetItems(unittest.TestCase):
 
 
 class TestClear(unittest.TestCase):
-
     """Test case for the DownloadList clear method."""
 
     def test_clear(self):
@@ -223,7 +222,6 @@ class TestClear(unittest.TestCase):
 
 
 class TestChangeStage(unittest.TestCase):
-
     """Test case for the DownloadList change_stage method."""
 
     def setUp(self):
@@ -239,7 +237,6 @@ class TestChangeStage(unittest.TestCase):
 
 
 class TestIndex(unittest.TestCase):
-
     """Test case for the DownloadList index method."""
 
     def setUp(self):
@@ -254,7 +251,6 @@ class TestIndex(unittest.TestCase):
 
 
 class TestSynchronizeDecorator(unittest.TestCase):
-
     def test_synchronize(self):
         mock_func = mock.Mock()
         mock_lock = mock.Mock()
@@ -272,5 +268,5 @@ def main():
     unittest.main()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

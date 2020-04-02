@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 """Youtubedlg module that contains util functions.
 
 Attributes:
@@ -9,35 +6,31 @@ Attributes:
     YOUTUBEDL_BIN (string): Youtube-dl binary filename.
 
 """
-
-from __future__ import unicode_literals
-
-import os
-import sys
 import json
-import math
 import locale
+import math
+import os
 import subprocess
+import sys
 
 try:
     from twodict import TwoWayOrderedDict
 except ImportError as error:
-    print error
+    print(error)
     sys.exit(1)
 
 from .info import __appname__
 from .version import __version__
 
-
 _RANDOM_OBJECT = object()
 
+YOUTUBEDL_BIN = "youtube-dl"
+if os.name == "nt":
+    YOUTUBEDL_BIN += ".exe"
 
-YOUTUBEDL_BIN = 'youtube-dl'
-if os.name == 'nt':
-    YOUTUBEDL_BIN += '.exe'
-
-
-FILESIZE_METRICS = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+FILESIZE_METRICS = [
+    "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
+]
 
 KILO_SIZE = 1024.0
 
@@ -46,9 +39,9 @@ def get_encoding():
     """Return system encoding. """
     try:
         encoding = locale.getpreferredencoding()
-        'TEST'.encode(encoding)
-    except:
-        encoding = 'UTF-8'
+        "TEST".encode(encoding)
+    except UnicodeEncodeError:
+        encoding = "UTF-8"
 
     return encoding
 
@@ -64,21 +57,24 @@ def convert_item(item, to_unicode=False):
             types back to 'str'.
 
     """
-    if to_unicode and isinstance(item, str):
+    if to_unicode and hasattr(item, "encode"):
         # Convert str to unicode
-        return item.decode(get_encoding(), 'ignore')
+        return item.encode(get_encoding(), "ignore")
 
-    if not to_unicode and isinstance(item, unicode):
+    if not to_unicode and hasattr(item, "decode"):
         # Convert unicode to str
-        return item.encode(get_encoding(), 'ignore')
+        return item.decode(get_encoding(), "ignore")
 
-    if hasattr(item, '__iter__'):
+    if hasattr(item, "__iter__"):
         # Handle iterables
         temp_list = []
 
         for sub_item in item:
             if isinstance(item, dict):
-                temp_list.append((convert_item(sub_item, to_unicode), convert_item(item[sub_item], to_unicode)))
+                temp_list.append((
+                    convert_item(sub_item, to_unicode),
+                    convert_item(item[sub_item], to_unicode),
+                ))
             else:
                 temp_list.append(convert_item(sub_item, to_unicode))
 
@@ -96,6 +92,7 @@ def convert_on_bounds(func):
     returned strings values back to 'unicode'.
 
     """
+
     def wrapper(*args, **kwargs):
         returned_value = func(*convert_item(args), **convert_item(kwargs))
 
@@ -106,22 +103,24 @@ def convert_on_bounds(func):
 
 # See: https://github.com/MrS0m30n3/youtube-dl-gui/issues/57
 # Patch os functions to convert between 'str' and 'unicode' on app bounds
-os_sep = unicode(os.sep)
-os_getenv = convert_on_bounds(os.getenv)
-os_makedirs = convert_on_bounds(os.makedirs)
-os_path_isdir = convert_on_bounds(os.path.isdir)
-os_path_exists = convert_on_bounds(os.path.exists)
-os_path_dirname = convert_on_bounds(os.path.dirname)
-os_path_abspath = convert_on_bounds(os.path.abspath)
-os_path_realpath = convert_on_bounds(os.path.realpath)
-os_path_expanduser = convert_on_bounds(os.path.expanduser)
+# not needed for Python 3
+os_sep = os.sep
+os_getenv = os.getenv
+os_makedirs = os.makedirs
+os_path_isdir = os.path.isdir
+os_path_exists = os.path.exists
+os_path_dirname = os.path.dirname
+os_path_abspath = os.path.abspath
+os_path_realpath = os.path.realpath
+os_path_expanduser = os.path.expanduser
 
 # Patch locale functions
 locale_getdefaultlocale = convert_on_bounds(locale.getdefaultlocale)
 
 # Patch Windows specific functions
-if os.name == 'nt':
+if os.name == "nt":
     os_startfile = convert_on_bounds(os.startfile)
+
 
 def remove_file(filename):
     if os_path_exists(filename):
@@ -130,9 +129,10 @@ def remove_file(filename):
 
     return False
 
+
 def remove_shortcuts(path):
     """Return given path after removing the shortcuts. """
-    return path.replace('~', os_path_expanduser('~'))
+    return path.replace("~", os_path_expanduser("~"))
 
 
 def absolute_path(filename):
@@ -162,12 +162,12 @@ def open_file(file_path):
 
 def encode_tuple(tuple_to_encode):
     """Turn size tuple into string. """
-    return '%s/%s' % (tuple_to_encode[0], tuple_to_encode[1])
+    return "%s/%s" % (tuple_to_encode[0], tuple_to_encode[1])
 
 
 def decode_tuple(encoded_tuple):
     """Turn tuple string back to tuple. """
-    s = encoded_tuple.split('/')
+    s = encoded_tuple.split("/")
     return int(s[0]), int(s[1])
 
 
@@ -185,10 +185,10 @@ def get_config_path():
         Linux   = ~/.config + app_name
 
     """
-    if os.name == 'nt':
-        path = os_getenv('APPDATA')
+    if os.name == "nt":
+        path = os_getenv("APPDATA")
     else:
-        path = os.path.join(os_path_expanduser('~'), '.config')
+        path = os.path.join(os_path_expanduser("~"), ".config")
 
     return os.path.join(path, __appname__.lower())
 
@@ -210,8 +210,8 @@ def shutdown_sys(password=None):
     info = None
     encoding = get_encoding()
 
-    if os.name == 'nt':
-        cmd = ['shutdown', '/s', '/t', '1']
+    if os.name == "nt":
+        cmd = ["shutdown", "/s", "/t", "1"]
 
         # Hide subprocess window
         info = subprocess.STARTUPINFO()
@@ -219,12 +219,12 @@ def shutdown_sys(password=None):
     else:
         if password:
             _stdin = subprocess.PIPE
-            password = ('%s\n' % password).encode(encoding)
-            cmd = ['sudo', '-S', '/sbin/shutdown', '-h', 'now']
+            password = ("%s\n" % password).encode(encoding)
+            cmd = ["sudo", "-S", "/sbin/shutdown", "-h", "now"]
         else:
-            cmd = ['/sbin/shutdown', '-h', 'now']
+            cmd = ["/sbin/shutdown", "-h", "now"]
 
-    cmd = [item.encode(encoding, 'ignore') for item in cmd]
+    cmd = [item.encode(encoding, "ignore") for item in cmd]
 
     shutdown_proc = subprocess.Popen(cmd,
                                      stderr=_stderr,
@@ -239,7 +239,7 @@ def shutdown_sys(password=None):
 def to_string(data):
     """Convert data to string.
     Works for both Python2 & Python3. """
-    return '%s' % data
+    return "%s" % data
 
 
 def get_time(seconds):
@@ -255,10 +255,10 @@ def get_time(seconds):
     """
     dtime = dict(seconds=0, minutes=0, hours=0, days=0)
 
-    dtime['days'] = int(seconds / 86400)
-    dtime['hours'] = int(seconds % 86400 / 3600)
-    dtime['minutes'] = int(seconds % 86400 % 3600 / 60)
-    dtime['seconds'] = int(seconds % 86400 % 3600 % 60)
+    dtime["days"] = int(seconds / 86400)
+    dtime["hours"] = int(seconds % 86400 / 3600)
+    dtime["minutes"] = int(seconds % 86400 % 3600 / 60)
+    dtime["seconds"] = int(seconds % 86400 % 3600 % 60)
 
     return dtime
 
@@ -318,7 +318,7 @@ def get_pixmaps_dir():
     """
     search_dirs = [
         os.path.join(absolute_path(sys.argv[0]), "data"),
-        os.path.join(os_path_dirname(__file__), "data")
+        os.path.join(os_path_dirname(__file__), "data"),
     ]
 
     for directory in search_dirs:
@@ -341,18 +341,18 @@ def to_bytes(string):
 
     exponent = index * (-1) + (len(FILESIZE_METRICS) - 1)
 
-    return round(value * (KILO_SIZE ** exponent), 2)
+    return round(value * (KILO_SIZE**exponent), 2)
 
 
-def format_bytes(bytes):
+def format_bytes(value):
     """Format bytes to youtube-dl size output strings."""
-    if bytes == 0.0:
+    if value == 0.0:
         exponent = 0
     else:
-        exponent = int(math.log(bytes, KILO_SIZE))
+        exponent = int(math.log(value, KILO_SIZE))
 
     suffix = FILESIZE_METRICS[exponent]
-    output_value = bytes / (KILO_SIZE ** exponent)
+    output_value = value / (KILO_SIZE**exponent)
 
     return "%.2f%s" % (output_value, suffix)
 
@@ -366,7 +366,7 @@ def build_command(options_list, url):
 
         for symbol in special_symbols:
             if symbol in option:
-                return "\"{}\"".format(option)
+                return '"{}"'.format(option)
 
         return option
 
@@ -376,16 +376,16 @@ def build_command(options_list, url):
     options = [escape(option) for option in options_list]
 
     # Always wrap the url with double quotes
-    url = "\"{}\"".format(url)
+    url = '"{}"'.format(url)
 
     return " ".join([YOUTUBEDL_BIN] + options + [url])
 
 
 def get_default_lang():
-    """Get default language using the 'locale' module."""
-    default_lang, _ = locale_getdefaultlocale()
+    """Return the language.
 
-    if not default_lang:
-        default_lang = "en_US"
+    Returns:
+        The chosen language if present, or a default of 'en_US' if blank.
 
-    return default_lang
+    """
+    return locale_getdefaultlocale()[0] or "en_US"

@@ -1,20 +1,11 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 """Youtubedlg module responsible for parsing the options. """
-
-from __future__ import unicode_literals
-
 import os.path
 
-from .utils import (
-    remove_shortcuts,
-    to_string
-)
+from .utils import remove_shortcuts
+from .utils import to_string
 
 
 class OptionHolder(object):
-
     """Simple data structure that holds informations for the given option.
 
     Args:
@@ -63,7 +54,6 @@ class OptionHolder(object):
 
 
 class OptionsParser(object):
-
     """Parse optionsmanager.OptionsManager options.
 
     This class is responsible for turning some of the youtube-dlg options
@@ -73,40 +63,42 @@ class OptionsParser(object):
 
     def __init__(self):
         self._ydl_options = [
-            OptionHolder('playlist_start', '--playlist-start', 1),
-            OptionHolder('playlist_end', '--playlist-end', 0),
-            OptionHolder('max_downloads', '--max-downloads', 0),
-            OptionHolder('username', '-u', ''),
-            OptionHolder('password', '-p', ''),
-            OptionHolder('video_password', '--video-password', ''),
-            OptionHolder('retries', '-R', 10),
-            OptionHolder('proxy', '--proxy', ''),
-            OptionHolder('user_agent', '--user-agent', ''),
-            OptionHolder('referer', '--referer', ''),
-            OptionHolder('ignore_errors', '-i', False),
-            OptionHolder('write_description', '--write-description', False),
-            OptionHolder('write_info', '--write-info-json', False),
-            OptionHolder('write_thumbnail', '--write-thumbnail', False),
-            OptionHolder('min_filesize', '--min-filesize', 0),
-            OptionHolder('max_filesize', '--max-filesize', 0),
-            OptionHolder('write_all_subs', '--all-subs', False),
-            OptionHolder('write_auto_subs', '--write-auto-sub', False),
-            OptionHolder('write_subs', '--write-sub', False),
-            OptionHolder('keep_video', '-k', False),
-            OptionHolder('restrict_filenames', '--restrict-filenames', False),
-            OptionHolder('save_path', '-o', ''),
-            OptionHolder('embed_subs', '--embed-subs', False, ['write_auto_subs', 'write_subs']),
-            OptionHolder('to_audio', '-x', False),
-            OptionHolder('audio_format', '--audio-format', ''),
-            OptionHolder('video_format', '-f', '0'),
-            OptionHolder('subs_lang', '--sub-lang', '', ['write_subs']),
-            OptionHolder('audio_quality', '--audio-quality', '5', ['to_audio']),
-            OptionHolder('youtube_dl_debug', '-v', False),
-            OptionHolder('ignore_config', '--ignore-config', False),
-            OptionHolder('native_hls', '--hls-prefer-native', False),
-            OptionHolder('nomtime', '--no-mtime', False),
-            OptionHolder('embed_thumbnail', '--embed-thumbnail', False),
-            OptionHolder('add_metadata', '--add-metadata', False)
+            OptionHolder("playlist_start", "--playlist-start", 1),
+            OptionHolder("playlist_end", "--playlist-end", 0),
+            OptionHolder("max_downloads", "--max-downloads", 0),
+            OptionHolder("username", "-u", ""),
+            OptionHolder("password", "-p", ""),
+            OptionHolder("video_password", "--video-password", ""),
+            OptionHolder("retries", "-R", 10),
+            OptionHolder("proxy", "--proxy", ""),
+            OptionHolder("user_agent", "--user-agent", ""),
+            OptionHolder("referer", "--referer", ""),
+            OptionHolder("ignore_errors", "-i", False),
+            OptionHolder("write_description", "--write-description", False),
+            OptionHolder("write_info", "--write-info-json", False),
+            OptionHolder("write_thumbnail", "--write-thumbnail", False),
+            OptionHolder("min_filesize", "--min-filesize", 0),
+            OptionHolder("max_filesize", "--max-filesize", 0),
+            OptionHolder("write_all_subs", "--all-subs", False),
+            OptionHolder("write_auto_subs", "--write-auto-sub", False),
+            OptionHolder("write_subs", "--write-sub", False),
+            OptionHolder("keep_video", "-k", False),
+            OptionHolder("restrict_filenames", "--restrict-filenames", False),
+            OptionHolder("save_path", "-o", ""),
+            OptionHolder("embed_subs", "--embed-subs", False,
+                         ["write_auto_subs", "write_subs"]),
+            OptionHolder("to_audio", "-x", False),
+            OptionHolder("audio_format", "--audio-format", ""),
+            OptionHolder("video_format", "-f", "0"),
+            OptionHolder("subs_lang", "--sub-lang", "", ["write_subs"]),
+            OptionHolder("audio_quality", "--audio-quality", "5",
+                         ["to_audio"]),
+            OptionHolder("youtube_dl_debug", "-v", False),
+            OptionHolder("ignore_config", "--ignore-config", False),
+            OptionHolder("native_hls", "--hls-prefer-native", False),
+            OptionHolder("nomtime", "--no-mtime", False),
+            OptionHolder("embed_thumbnail", "--embed-thumbnail", False),
+            OptionHolder("add_metadata", "--add-metadata", False),
         ]
 
     def parse(self, options_dictionary):
@@ -122,7 +114,7 @@ class OptionsParser(object):
 
         """
         # REFACTOR
-        options_list = ['--newline']
+        options_list = ["--newline"]
 
         # Create a copy of options_dictionary
         # We don't want to edit the original options dictionary
@@ -135,7 +127,7 @@ class OptionsParser(object):
 
         # Parse basic youtube-dl command line options
         for option in self._ydl_options:
-            #NOTE Special case should be removed
+            # NOTE Special case should be removed
             if option.name == "to_audio":
                 if options_dict["audio_format"] == "":
                     value = options_dict[option.name]
@@ -150,13 +142,14 @@ class OptionsParser(object):
                     options_list.append(option.flag)
                     options_list.append(to_string(value))
 
-                    #NOTE Temp fix
+                    # NOTE Temp fix
                     # If current 'audio_quality' is not the default one ('5')
                     # then append the audio quality flag and value to the
                     # options list
                     if options_dict["audio_quality"] != "5":
                         options_list.append("--audio-quality")
-                        options_list.append(to_string(options_dict["audio_quality"]))
+                        options_list.append(
+                            to_string(options_dict["audio_quality"]))
 
             elif option.name == "audio_quality":
                 # If the '--audio-quality' is not already in the options list
@@ -193,7 +186,7 @@ class OptionsParser(object):
 
             # Its a special case if its already a special case
             # or an item starts with double quotes
-            special_case = (special_case or item[0] == "\"")
+            special_case = special_case or item[0] == '"'
 
             if special_case:
                 special_items.append(item)
@@ -204,7 +197,7 @@ class OptionsParser(object):
             # at the end of the item, special case is over and
             # we need to join, filter and append our special items
             # to the options list
-            if special_case and item[-1] == "\"":
+            if special_case and item[-1] == '"':
                 options_list.append(" ".join(special_items)[1:-1])
 
                 special_case = False
@@ -222,7 +215,7 @@ class OptionsParser(object):
             options_dict (dict): Copy of the original options dictionary.
 
         """
-        save_path = remove_shortcuts(options_dict['save_path'])
+        save_path = remove_shortcuts(options_dict["save_path"])
 
         if options_dict["output_format"] == 0:
             template = "%(id)s.%(ext)s"
@@ -249,8 +242,11 @@ class OptionsParser(object):
             options_dict (dict): Copy of the original options dictionary.
 
         """
-        if options_dict['video_format'] != '0' and options_dict['second_video_format'] != '0':
-            options_dict['video_format'] = options_dict['video_format'] + '+' + options_dict['second_video_format']
+        if (options_dict["video_format"] != "0"
+                and options_dict["second_video_format"] != "0"):
+            options_dict["video_format"] = (
+                options_dict["video_format"] + "+" +
+                options_dict["second_video_format"])
 
     def _build_filesizes(self, options_dict):
         """Build the filesize options values.
@@ -262,8 +258,12 @@ class OptionsParser(object):
             options_dict (dict): Copy of the original options dictionary.
 
         """
-        if options_dict['min_filesize']:
-            options_dict['min_filesize'] = to_string(options_dict['min_filesize']) + options_dict['min_filesize_unit']
+        if options_dict["min_filesize"]:
+            options_dict["min_filesize"] = (
+                to_string(options_dict["min_filesize"]) +
+                options_dict["min_filesize_unit"])
 
-        if options_dict['max_filesize']:
-            options_dict['max_filesize'] = to_string(options_dict['max_filesize']) + options_dict['max_filesize_unit']
+        if options_dict["max_filesize"]:
+            options_dict["max_filesize"] = (
+                to_string(options_dict["max_filesize"]) +
+                options_dict["max_filesize_unit"])

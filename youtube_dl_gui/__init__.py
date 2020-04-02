@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 """Youtubedlg __init__ file.
 
 Responsible on how the package looks from the outside.
@@ -13,17 +10,24 @@ Example:
         youtube_dl_gui.main()
 
 """
-
-from __future__ import unicode_literals
-
-import sys
 import gettext
 import os.path
+import sys
+from gettext import gettext as _
+
+from .formats import load_formats
+from .logmanager import LogManager
+from .mainframe import MainFrame
+from .optionsmanager import OptionsManager
+from .utils import get_config_path
+from .utils import get_locale_file
+from .utils import os_path_exists
+from .utils import YOUTUBEDL_BIN
 
 try:
     import wx
 except ImportError as error:
-    print error
+    print(error)
     sys.exit(1)
 
 __packagename__ = "youtube_dl_gui"
@@ -42,18 +46,6 @@ from .info import (
 )
 
 gettext.install(__packagename__)
-from .formats import reload_strings
-
-from .logmanager import LogManager
-from .optionsmanager import OptionsManager
-
-from .utils import (
-    get_config_path,
-    get_locale_file,
-    os_path_exists,
-    YOUTUBEDL_BIN
-)
-
 
 # Set config path and create options and log managers
 config_path = get_config_path()
@@ -61,34 +53,40 @@ config_path = get_config_path()
 opt_manager = OptionsManager(config_path)
 log_manager = None
 
-if opt_manager.options['enable_log']:
-    log_manager = LogManager(config_path, opt_manager.options['log_time'])
+if opt_manager.options["enable_log"]:
+    log_manager = LogManager(config_path, opt_manager.options["log_time"])
 
 # Set gettext before MainFrame import
 # because the GUI strings are class level attributes
 locale_dir = get_locale_file()
 
 try:
-    gettext.translation(__packagename__, locale_dir, [opt_manager.options['locale_name']]).install(unicode=True)
+    gettext.translation(
+        __packagename__, locale_dir,
+        [str(opt_manager.options["locale_name"])]).install(unicode=True)
 except IOError:
-    opt_manager.options['locale_name'] = 'en_US'
+    opt_manager.options["locale_name"] = "en_US"
     gettext.install(__packagename__)
 
-reload_strings()
-
-from .mainframe import MainFrame
+load_formats()
 
 
 def main():
     """The real main. Creates and calls the main app windows. """
-    youtubedl_path = os.path.join(opt_manager.options["youtubedl_path"], YOUTUBEDL_BIN)
+    youtubedl_path = os.path.join(opt_manager.options["youtubedl_path"],
+                                  YOUTUBEDL_BIN)
 
     app = wx.App()
     frame = MainFrame(opt_manager, log_manager)
     frame.Show()
 
-    if opt_manager.options["disable_update"] and not os_path_exists(youtubedl_path):
-        wx.MessageBox(_("Failed to locate youtube-dl and updates are disabled"), _("Error"), wx.OK | wx.ICON_ERROR)
+    if opt_manager.options["disable_update"] and not os_path_exists(
+            youtubedl_path):
+        wx.MessageBox(
+            _("Failed to locate youtube-dl and updates are disabled"),
+            _("Error"),
+            wx.OK | wx.ICON_ERROR,
+        )
         frame.close()
 
     app.MainLoop()

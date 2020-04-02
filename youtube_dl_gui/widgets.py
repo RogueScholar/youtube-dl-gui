@@ -1,14 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
-from __future__ import unicode_literals
-
 import sys
 
 try:
     import wx
 except ImportError as error:
-    print error
+    print(error)
     sys.exit(1)
 
 
@@ -18,7 +13,6 @@ def crt_command_event(event_type, event_id=0):
 
 
 class ListBoxWithHeaders(wx.ListBox):
-
     """Custom ListBox object that supports 'headers'.
 
     Attributes:
@@ -41,12 +35,22 @@ class ListBoxWithHeaders(wx.ListBox):
         wx.EVT_RIGHT_DOWN,
         wx.EVT_RIGHT_DCLICK,
         wx.EVT_MIDDLE_DOWN,
-        wx.EVT_MIDDLE_DCLICK
+        wx.EVT_MIDDLE_DCLICK,
     ]
 
-    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
-            size=wx.DefaultSize, choices=[], style=0, validator=wx.DefaultValidator, name=NAME):
-        super(ListBoxWithHeaders, self).__init__(parent, id, pos, size, [], style, validator, name)
+    def __init__(
+            self,
+            parent,
+            id=wx.ID_ANY,
+            pos=wx.DefaultPosition,
+            size=wx.DefaultSize,
+            choices=[],
+            style=0,
+            validator=wx.DefaultValidator,
+            name=NAME,
+    ):
+        super(ListBoxWithHeaders, self).__init__(parent, id, pos, size, [],
+                                                 style, validator, name)
         self.__headers = set()
 
         # Ignore all key events i'm bored to handle the header selection
@@ -87,16 +91,17 @@ class ListBoxWithHeaders(wx.ListBox):
     # wx.ListBox methods
 
     def FindString(self, string):
-        index = super(ListBoxWithHeaders, self).FindString(string)
-
-        if index == wx.NOT_FOUND:
-            # This time try with prefix
-            index = super(ListBoxWithHeaders, self).FindString(self._add_prefix(string))
-
-        return index
+        # self.GetString wasn't properly finding strings that were
+        # clearly in self.GetStrings()
+        content = list(map(str.strip, self.GetStrings()))
+        try:
+            return content.index(string.strip())
+        except ValueError:
+            return -1
 
     def GetStringSelection(self):
-        return self._remove_prefix(super(ListBoxWithHeaders, self).GetStringSelection())
+        return self._remove_prefix(
+            super(ListBoxWithHeaders, self).GetStringSelection())
 
     def GetString(self, index):
         if index < 0 or index >= self.GetCount():
@@ -105,7 +110,8 @@ class ListBoxWithHeaders(wx.ListBox):
             # invalid indices
             return ""
 
-        return self._remove_prefix(super(ListBoxWithHeaders, self).GetString(index))
+        return self._remove_prefix(
+            super(ListBoxWithHeaders, self).GetString(index))
 
     def InsertItems(self, items, pos):
         items = [self._add_prefix(item) for item in items]
@@ -136,7 +142,11 @@ class ListBoxWithHeaders(wx.ListBox):
     # wx.ItemContainer methods
 
     def Append(self, string):
-        super(ListBoxWithHeaders, self).Append(self._add_prefix(string))
+        if isinstance(string, str):  # for strings
+            content = self._add_prefix(string)
+        else:  # for lists
+            content = list(map(self._add_prefix, string))
+        super(ListBoxWithHeaders, self).Append(content)
 
     def AppendItems(self, strings):
         strings = [self._add_prefix(string) for string in strings]
@@ -174,7 +184,6 @@ class ListBoxWithHeaders(wx.ListBox):
 
 
 class ListBoxPopup(wx.PopupTransientWindow):
-
     """ListBoxWithHeaders as a popup.
 
     This class uses the wx.PopupTransientWindow to create the popup and the
@@ -188,8 +197,8 @@ class ListBoxPopup(wx.PopupTransientWindow):
 
     EVENTS_TABLE = {
         "EVT_COMBOBOX": crt_command_event(wx.EVT_COMBOBOX),
-        "EVT_COMBOBOX_DROPDOWN" : crt_command_event(wx.EVT_COMBOBOX_DROPDOWN),
-        "EVT_COMBOBOX_CLOSEUP": crt_command_event(wx.EVT_COMBOBOX_CLOSEUP)
+        "EVT_COMBOBOX_DROPDOWN": crt_command_event(wx.EVT_COMBOBOX_DROPDOWN),
+        "EVT_COMBOBOX_CLOSEUP": crt_command_event(wx.EVT_COMBOBOX_CLOSEUP),
     }
 
     def __init__(self, parent=None, flags=wx.BORDER_NONE):
@@ -255,12 +264,11 @@ class ListBoxPopup(wx.PopupTransientWindow):
     def GetStringValue(self):
         return self.__listbox.GetString(self.value)
 
-    #def SetStringValue(self, string):
-        #self.__listbox.SetStringSelection(string)
+    # def SetStringValue(self, string):
+    # self.__listbox.SetStringSelection(string)
 
 
 class CustomComboBox(wx.Panel):
-
     """Custom combobox.
 
     Attributes:
@@ -270,24 +278,41 @@ class CustomComboBox(wx.Panel):
         NAME (string): Default name for the name argument of the __init__.
 
     """
-    #NOTE wx.ComboBox does not support EVT_MOTION inside the popup
-    #NOTE Tried with ComboCtrl but i was not able to draw the button
+
+    # NOTE wx.ComboBox does not support EVT_MOTION inside the popup
+    # NOTE Tried with ComboCtrl but i was not able to draw the button
 
     CB_READONLY = wx.TE_READONLY
 
     NAME = "customComboBox"
 
-    def __init__(self, parent, id=wx.ID_ANY, value="", pos=wx.DefaultPosition,
-            size=wx.DefaultSize, choices=[], style=0, validator=wx.DefaultValidator, name=NAME):
+    def __init__(
+            self,
+            parent,
+            id=wx.ID_ANY,
+            value="",
+            pos=wx.DefaultPosition,
+            size=wx.DefaultSize,
+            choices=[],
+            style=0,
+            validator=wx.DefaultValidator,
+            name=NAME,
+    ):
         super(CustomComboBox, self).__init__(parent, id, pos, size, 0, name)
 
         assert style == self.CB_READONLY or style == 0
 
         # Create components
-        self.textctrl = wx.TextCtrl(self, wx.ID_ANY, style=style, validator=validator)
+        self.textctrl = wx.TextCtrl(self,
+                                    wx.ID_ANY,
+                                    style=style,
+                                    validator=validator)
         tc_height = self.textctrl.GetSize()[1]
 
-        self.button = wx.Button(self, wx.ID_ANY, "▾", size=(tc_height, tc_height))
+        self.button = wx.Button(self,
+                                wx.ID_ANY,
+                                "▾",
+                                size=(tc_height, tc_height))
 
         # Create the ListBoxPopup in two steps
         self.listbox = ListBoxPopup(self)
@@ -304,7 +329,8 @@ class CustomComboBox(wx.Panel):
         self.button.Bind(wx.EVT_BUTTON, self._on_button)
 
         for event in ListBoxPopup.EVENTS_TABLE.values():
-            self.listbox.Bind(wx.PyEventBinder(event.GetEventType()), self._propagate)
+            self.listbox.Bind(wx.PyEventBinder(event.GetEventType()),
+                              self._propagate)
 
         # Append items since the ListBoxPopup does not have the 'choices' arg
         self.listbox.GetControl().AppendItems(choices)
@@ -333,7 +359,8 @@ class CustomComboBox(wx.Panel):
         _, me_y_axis = self.GetScreenPosition()
 
         available_height = screen_height - (me_y_axis + tc_height)
-        sug_width, sug_height = self.listbox.GetAdjustedSize(me_width, tc_height, available_height)
+        sug_width, sug_height = self.listbox.GetAdjustedSize(
+            me_width, tc_height, available_height)
 
         return me_width, sug_height
 
@@ -343,7 +370,7 @@ class CustomComboBox(wx.Panel):
         self.listbox.Dismiss()
 
     def FindString(self, string, caseSensitive=False):
-        #TODO handle caseSensitive
+        # TODO handle caseSensitive
         return self.listbox.GetControl().FindString(string)
 
     def GetCount(self):
@@ -395,7 +422,8 @@ class CustomComboBox(wx.Panel):
         index = self.listbox.GetControl().FindString(string)
         self.listbox.GetControl().SetSelection(index)
 
-        if index != wx.NOT_FOUND and self.listbox.GetControl().GetSelection() == index:
+        if index != wx.NOT_FOUND and self.listbox.GetControl().GetSelection(
+        ) == index:
             self.listbox.value = index
             self.textctrl.SetValue(string)
 

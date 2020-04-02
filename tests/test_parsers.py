@@ -1,12 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 """Contains test cases for the parsers module."""
-
-from __future__ import unicode_literals
-
-import sys
 import os.path
+import sys
 import unittest
 
 PATH = os.path.realpath(os.path.abspath(__file__))
@@ -15,18 +9,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(PATH)))
 try:
     from youtube_dl_gui.parsers import OptionsParser
 except ImportError as error:
-    print error
+    print(error)
     sys.exit(1)
 
 
 class TestParse(unittest.TestCase):
-
     """Test case for OptionsParser parse method."""
 
     def setUp(self):
         # Create the options_dict based on the OptionHolder
         # items inside the OptionsParser object
-        self.options_dict = {item.name:item.default_value for item in OptionsParser()._ydl_options}
+        self.options_dict = {
+            item.name: item.default_value
+            for item in OptionsParser()._ydl_options
+        }
 
         # Add extra options used by the OptionsParser.parse method
         self.options_dict["save_path"] = "/home/user/Workplace/test/youtube"
@@ -39,7 +35,8 @@ class TestParse(unittest.TestCase):
     def check_options_parse(self, expected_options):
         options_parser = OptionsParser()
 
-        self.assertItemsEqual(options_parser.parse(self.options_dict), expected_options)
+        self.assertEqual(sorted(options_parser.parse(self.options_dict)),
+                         sorted(expected_options))
 
     def test_parse_to_audio_requirement_bug(self):
         """Test case for the 'to_audio' requirement."""
@@ -48,15 +45,18 @@ class TestParse(unittest.TestCase):
         self.options_dict["audio_format"] = "mp3"
         self.options_dict["embed_thumbnail"] = True
 
-        expected_cmd_list = ["--newline",
-                             "-x",
-                             "--audio-format",
-                             "mp3",
-                             "--embed-thumbnail",
-                             "--audio-quality",
-                             "9",
-                             "-o",
-                             "/home/user/Workplace/test/youtube/%(title)s.%(ext)s"]
+        expected_cmd_list = [
+            "--newline",
+            "-x",
+            "--audio-format",
+            "mp3",
+            "--embed-thumbnail",
+            "--audio-quality",
+            "9",
+            "-o",
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
+        ]
 
         self.check_options_parse(expected_cmd_list)
 
@@ -76,59 +76,70 @@ class TestParse(unittest.TestCase):
         self.options_dict["video_format"] = "mp4"
 
         # Test with three quoted 'cmd_args'
-        self.options_dict["cmd_args"] = "--recode-video mkv --postprocessor-args \"-codec copy -report\""
+        self.options_dict[
+            "cmd_args"] = '--recode-video mkv --postprocessor-args "-codec copy -report"'
 
-        expected_cmd_list = ["--newline",
-                             "-f",
-                             "mp4",
-                             "-o",
-                             "/home/user/Workplace/test/youtube/%(title)s.%(ext)s",
-                             "--recode-video",
-                             "mkv",
-                             "--postprocessor-args",
-                             "-codec copy -report"]
+        expected_cmd_list = [
+            "--newline",
+            "-f",
+            "mp4",
+            "-o",
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
+            "--recode-video",
+            "mkv",
+            "--postprocessor-args",
+            "-codec copy -report",
+        ]
 
         self.check_options_parse(expected_cmd_list)
-
 
         # Test with two quoted 'cmd_args'
-        self.options_dict["cmd_args"] = "--postprocessor-args \"-y -report\""
+        self.options_dict["cmd_args"] = '--postprocessor-args "-y -report"'
 
-        expected_cmd_list = ["--newline",
-                             "-f",
-                             "mp4",
-                             "-o",
-                             "/home/user/Workplace/test/youtube/%(title)s.%(ext)s",
-                             "--postprocessor-args",
-                             "-y -report"]
+        expected_cmd_list = [
+            "--newline",
+            "-f",
+            "mp4",
+            "-o",
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
+            "--postprocessor-args",
+            "-y -report",
+        ]
 
         self.check_options_parse(expected_cmd_list)
-
 
         # Test with one quoted 'cmd_arg' followed by other cmd line args
-        self.options_dict["cmd_args"] = "--postprocessor-args \"-y\" -v"
+        self.options_dict["cmd_args"] = '--postprocessor-args "-y" -v'
 
-        expected_cmd_list = ["--newline",
-                             "-f",
-                             "mp4",
-                             "-o",
-                             "/home/user/Workplace/test/youtube/%(title)s.%(ext)s",
-                             "--postprocessor-args",
-                             "-y",
-                             "-v"]
+        expected_cmd_list = [
+            "--newline",
+            "-f",
+            "mp4",
+            "-o",
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
+            "--postprocessor-args",
+            "-y",
+            "-v",
+        ]
 
         self.check_options_parse(expected_cmd_list)
 
-
         # Test the example presented in issue #54
-        self.options_dict["cmd_args"] = "-f \"(mp4)[width<1300]\""
-        self.options_dict["video_format"] = "0"  # Set video format to 'default'
+        self.options_dict["cmd_args"] = '-f "(mp4)[width<1300]"'
+        # Set video format to 'default'
+        self.options_dict["video_format"] = "0"
 
-        expected_cmd_list = ["--newline",
-                             "-o",
-                             "/home/user/Workplace/test/youtube/%(title)s.%(ext)s",
-                             "-f",
-                             "(mp4)[width<1300]"]
+        expected_cmd_list = [
+            "--newline",
+            "-o",
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
+            "-f",
+            "(mp4)[width<1300]",
+        ]
 
         self.check_options_parse(expected_cmd_list)
 
@@ -137,5 +148,5 @@ def main():
     unittest.main()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

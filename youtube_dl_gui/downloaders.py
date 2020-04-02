@@ -1,25 +1,22 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 """Python module to download videos.
 
 This module contains the actual downloaders responsible
 for downloading the video files.
 
+Note:
+    downloaders.py is part of the youtubedlg package but it can be used
+    as a stand alone module for downloading videos.
+
 """
-
-from __future__ import unicode_literals
-
-import re
-import os
-import sys
 import locale
+import os
+import re
 import signal
 import subprocess
-
-from time import sleep
-from Queue import Queue
+import sys
+from queue import Queue
 from threading import Thread
+from time import sleep
 
 from .utils import convert_item
 
@@ -58,9 +55,9 @@ class PipeReader(Thread):
 
         while self._running:
             if self._filedescriptor is not None:
-                for line in iter(self._filedescriptor.readline, str('')):
+                for line in iter(self._filedescriptor.readline, b""):
                     # Ignore ffmpeg stderr
-                    if str('ffmpeg version') in line:
+                    if b"ffmpeg version" in line:
                         ignore_line = True
 
                     if not ignore_line:
@@ -81,7 +78,6 @@ class PipeReader(Thread):
 
 
 class YoutubeDLDownloader(object):
-
     """Python class for downloading videos using youtube-dl & subprocess.
 
     Attributes:
@@ -167,7 +163,7 @@ class YoutubeDLDownloader(object):
 
         while self._proc_is_alive():
             stdout = self._proc.stdout.readline().rstrip()
-            stdout = convert_item(stdout, to_unicode=True)
+            stdout = convert_item(stdout, to_unicode=False)
 
             if stdout:
                 data_dict = extract_data(stdout)
@@ -178,7 +174,7 @@ class YoutubeDLDownloader(object):
         # We don't need to read stderr in real time
         while not self._stderr_queue.empty():
             stderr = self._stderr_queue.get_nowait().rstrip()
-            stderr = convert_item(stderr, to_unicode=True)
+            stderr = convert_item(stderr, to_unicode=False)
 
             self._log(stderr)
 
@@ -198,7 +194,8 @@ class YoutubeDLDownloader(object):
             self._return_code = self.ERROR
 
         if self._proc is not None and self._proc.returncode > 0:
-            self._log('Child process exited with non-zero code: {}'.format(self._proc.returncode))
+            self._log("Child process exited with non-zero code: {}".format(
+                self._proc.returncode))
 
         self._last_data_hook()
 
@@ -208,7 +205,7 @@ class YoutubeDLDownloader(object):
         """Stop the download process and set return code to STOPPED. """
         if self._proc_is_alive():
 
-            if os.name == 'nt':
+            if os.name == "nt":
                 # os.killpg is not available on Windows
                 # See: https://bugs.python.org/issue5115
                 self._proc.kill()
@@ -234,30 +231,30 @@ class YoutubeDLDownloader(object):
             self._return_code = code
 
     def _is_warning(self, stderr):
-        return stderr.split(':')[0] == 'WARNING'
+        return stderr.split(":")[0] == "WARNING"
 
     def _last_data_hook(self):
         """Set the last data information based on the return code. """
         data_dictionary = {}
 
         if self._return_code == self.OK:
-            data_dictionary['status'] = 'Finished'
+            data_dictionary["status"] = "Finished"
         elif self._return_code == self.ERROR:
-            data_dictionary['status'] = 'Error'
-            data_dictionary['speed'] = ''
-            data_dictionary['eta'] = ''
+            data_dictionary["status"] = "Error"
+            data_dictionary["speed"] = ""
+            data_dictionary["eta"] = ""
         elif self._return_code == self.WARNING:
-            data_dictionary['status'] = 'Warning'
-            data_dictionary['speed'] = ''
-            data_dictionary['eta'] = ''
+            data_dictionary["status"] = "Warning"
+            data_dictionary["speed"] = ""
+            data_dictionary["eta"] = ""
         elif self._return_code == self.STOPPED:
-            data_dictionary['status'] = 'Stopped'
-            data_dictionary['speed'] = ''
-            data_dictionary['eta'] = ''
+            data_dictionary["status"] = "Stopped"
+            data_dictionary["speed"] = ""
+            data_dictionary["eta"] = ""
         elif self._return_code == self.ALREADY:
-            data_dictionary['status'] = 'Already Downloaded'
+            data_dictionary["status"] = "Already Downloaded"
         else:
-            data_dictionary['status'] = 'Filesize Abort'
+            data_dictionary["status"] = "Filesize Abort"
 
         self._hook_data(data_dictionary)
 
@@ -270,18 +267,18 @@ class YoutubeDLDownloader(object):
                 empty when there are no data to extract. See extract_data().
 
         """
-        if 'status' in data:
-            if data['status'] == 'Already Downloaded':
+        if "status" in data:
+            if data["status"] == "Already Downloaded":
                 # Set self._return_code to already downloaded
                 # and trash that key
                 self._set_returncode(self.ALREADY)
-                data['status'] = None
+                data["status"] = None
 
-            if data['status'] == 'Filesize Abort':
+            if data["status"] == "Filesize Abort":
                 # Set self._return_code to filesize abort
                 # and trash that key
                 self._set_returncode(self.FILESIZE_ABORT)
-                data['status'] = None
+                data["status"] = None
 
     def _log(self, data):
         """Log data using the callback function. """
@@ -311,10 +308,10 @@ class YoutubeDLDownloader(object):
             Python list that contains the command to execute.
 
         """
-        if os.name == 'nt':
+        if os.name == "nt":
             cmd = [self.youtubedl_path] + options + [url]
         else:
-            cmd = ['python', self.youtubedl_path] + options + [url]
+            cmd = ["python", self.youtubedl_path] + options + [url]
 
         return cmd
 
@@ -330,7 +327,7 @@ class YoutubeDLDownloader(object):
         # Keep a unicode copy of cmd for the log
         ucmd = cmd
 
-        if os.name == 'nt':
+        if os.name == "nt":
             # Hide subprocess window
             info = subprocess.STARTUPINFO()
             info.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -342,16 +339,18 @@ class YoutubeDLDownloader(object):
         # Encode command for subprocess
         # Refer to http://stackoverflow.com/a/9951851/35070
         if sys.version_info < (3, 0):
-            cmd = convert_item(cmd, to_unicode=False)
+            cmd = convert_item(cmd, to_unicode=True)
 
         try:
-            self._proc = subprocess.Popen(cmd,
-                                          stdout=subprocess.PIPE,
-                                          stderr=subprocess.PIPE,
-                                          preexec_fn=preexec,
-                                          startupinfo=info)
+            self._proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                preexec_fn=preexec,
+                startupinfo=info,
+            )
         except (ValueError, OSError) as error:
-            self._log('Failed to start process: {}'.format(ucmd))
+            self._log("Failed to start process: {}".format(ucmd))
             self._log(convert_item(str(error), to_unicode=True))
 
 
@@ -378,9 +377,10 @@ def extract_data(stdout):
         'playlist_size'  : The number of videos in the playlist.
 
     """
+
     # REFACTOR
     def extract_filename(input_data):
-        path, fullname = os.path.split(input_data.strip("\""))
+        path, fullname = os.path.split(input_data.strip('"'))
         filename, extension = os.path.splitext(fullname)
 
         return path, filename, extension
@@ -393,104 +393,109 @@ def extract_data(stdout):
     # We want to keep the spaces in order to extract filenames with
     # multiple whitespaces correctly. We also keep a copy of the old
     # 'stdout' for backward compatibility with the old code
-    stdout_with_spaces = stdout.split(' ')
+    stdout_with_spaces = stdout.split(" ")
     stdout = stdout.split()
 
-    stdout[0] = stdout[0].lstrip('\r')
+    stdout[0] = stdout[0].lstrip("\r")
 
-    if stdout[0] == '[download]':
-        data_dictionary['status'] = 'Downloading'
+    if stdout[0] == "[download]":
+        data_dictionary["status"] = "Downloading"
 
         # Get path, filename & extension
-        if stdout[1] == 'Destination:':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[2:]))
+        if stdout[1] == "Destination:":
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[2:]))
 
-            data_dictionary['path'] = path
-            data_dictionary['filename'] = filename
-            data_dictionary['extension'] = extension
+            data_dictionary["path"] = path
+            data_dictionary["filename"] = filename
+            data_dictionary["extension"] = extension
 
         # Get progress info
-        if '%' in stdout[1]:
-            if stdout[1] == '100%':
-                data_dictionary['speed'] = ''
-                data_dictionary['eta'] = ''
-                data_dictionary['percent'] = '100%'
-                data_dictionary['filesize'] = stdout[3]
+        if "%" in stdout[1]:
+            if stdout[1] == "100%":
+                data_dictionary["speed"] = ""
+                data_dictionary["eta"] = ""
+                data_dictionary["percent"] = "100%"
+                data_dictionary["filesize"] = stdout[3]
             else:
-                data_dictionary['percent'] = stdout[1]
-                data_dictionary['filesize'] = stdout[3]
-                data_dictionary['speed'] = stdout[5]
-                data_dictionary['eta'] = stdout[7]
+                data_dictionary["percent"] = stdout[1]
+                data_dictionary["filesize"] = stdout[3]
+                data_dictionary["speed"] = stdout[5]
+                data_dictionary["eta"] = stdout[7]
 
         # Get playlist info
-        if stdout[1] == 'Downloading' and stdout[2] == 'video':
-            data_dictionary['playlist_index'] = stdout[3]
-            data_dictionary['playlist_size'] = stdout[5]
+        if stdout[1] == "Downloading" and stdout[2] == "video":
+            data_dictionary["playlist_index"] = stdout[3]
+            data_dictionary["playlist_size"] = stdout[5]
 
         # Remove the 'and merged' part from stdout when using ffmpeg to merge the formats
-        if stdout[-3] == 'downloaded' and stdout [-1] == 'merged':
+        if stdout[-3] == "downloaded" and stdout[-1] == "merged":
             stdout = stdout[:-2]
             stdout_with_spaces = stdout_with_spaces[:-2]
 
-            data_dictionary['percent'] = '100%'
+            data_dictionary["percent"] = "100%"
 
         # Get file already downloaded status
-        if stdout[-1] == 'downloaded':
-            data_dictionary['status'] = 'Already Downloaded'
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[1:-4]))
+        if stdout[-1] == "downloaded":
+            data_dictionary["status"] = "Already Downloaded"
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[1:-4]))
 
-            data_dictionary['path'] = path
-            data_dictionary['filename'] = filename
-            data_dictionary['extension'] = extension
+            data_dictionary["path"] = path
+            data_dictionary["filename"] = filename
+            data_dictionary["extension"] = extension
 
         # Get filesize abort status
-        if stdout[-1] == 'Aborting.':
-            data_dictionary['status'] = 'Filesize Abort'
+        if stdout[-1] == "Aborting.":
+            data_dictionary["status"] = "Filesize Abort"
 
-    elif stdout[0] == '[hlsnative]':
+    elif stdout[0] == "[hlsnative]":
         # native hls extractor
         # see: https://github.com/rg3/youtube-dl/blob/master/youtube_dl/downloader/hls.py#L54
-        data_dictionary['status'] = 'Downloading'
+        data_dictionary["status"] = "Downloading"
 
         if len(stdout) == 7:
             segment_no = float(stdout[6])
             current_segment = float(stdout[4])
 
             # Get the percentage
-            percent = '{0:.1f}%'.format(current_segment / segment_no * 100)
-            data_dictionary['percent'] = percent
+            percent = "{0:.1f}%".format(current_segment / segment_no * 100)
+            data_dictionary["percent"] = percent
 
-    elif stdout[0] == '[ffmpeg]':
-        data_dictionary['status'] = 'Post Processing'
+    elif stdout[0] == "[ffmpeg]":
+        data_dictionary["status"] = "Post Processing"
 
         # Get final extension after merging process
-        if stdout[1] == 'Merging':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[4:]))
+        if stdout[1] == "Merging":
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[4:]))
 
-            data_dictionary['path'] = path
-            data_dictionary['filename'] = filename
-            data_dictionary['extension'] = extension
+            data_dictionary["path"] = path
+            data_dictionary["filename"] = filename
+            data_dictionary["extension"] = extension
 
         # Get final extension ffmpeg post process simple (not file merge)
-        if stdout[1] == 'Destination:':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[2:]))
+        if stdout[1] == "Destination:":
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[2:]))
 
-            data_dictionary['path'] = path
-            data_dictionary['filename'] = filename
-            data_dictionary['extension'] = extension
+            data_dictionary["path"] = path
+            data_dictionary["filename"] = filename
+            data_dictionary["extension"] = extension
 
         # Get final extension after recoding process
-        if stdout[1] == 'Converting':
-            path, filename, extension = extract_filename(' '.join(stdout_with_spaces[8:]))
+        if stdout[1] == "Converting":
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[8:]))
 
-            data_dictionary['path'] = path
-            data_dictionary['filename'] = filename
-            data_dictionary['extension'] = extension
+            data_dictionary["path"] = path
+            data_dictionary["filename"] = filename
+            data_dictionary["extension"] = extension
 
-    elif stdout[0][0] != '[' or stdout[0] == '[debug]':
+    elif stdout[0][0] != "[" or stdout[0] == "[debug]":
         pass  # Just ignore this output
 
     else:
-        data_dictionary['status'] = 'Pre Processing'
+        data_dictionary["status"] = "Pre Processing"
 
     return data_dictionary

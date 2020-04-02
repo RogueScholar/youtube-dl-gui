@@ -1,30 +1,18 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-
 """Youtubedlg module to handle settings. """
-
-from __future__ import unicode_literals
-
-import os
 import json
+import os
 
-from .utils import (
-    os_path_expanduser,
-    os_path_exists,
-    encode_tuple,
-    decode_tuple,
-    check_path,
-    get_default_lang
-)
-
-from .formats import (
-    OUTPUT_FORMATS,
-    FORMATS
-)
+from .formats import FORMATS
+from .formats import OUTPUT_FORMATS
+from .utils import check_path
+from .utils import decode_tuple
+from .utils import encode_tuple
+from .utils import get_default_lang
+from .utils import os_path_exists
+from .utils import os_path_expanduser
 
 
 class OptionsManager(object):
-
     """Handles youtubedlg options.
 
     This class is responsible for storing and retrieving the options.
@@ -49,8 +37,8 @@ class OptionsManager(object):
 
     """
 
-    SETTINGS_FILENAME = 'settings.json'
-    SENSITIVE_KEYS = ('sudo_password', 'password', 'video_password')
+    SETTINGS_FILENAME = "settings.json"
+    SENSITIVE_KEYS = ("sudo_password", "password", "video_password")
 
     def __init__(self, config_path):
         self.config_path = config_path
@@ -235,86 +223,142 @@ class OptionsManager(object):
             disable_update (boolean): When True the update process will be disabled.
 
         """
-        #REFACTOR Remove old options & check options validation
+        # REFACTOR Remove old options & check options validation
         self.options = {
-            'save_path': os_path_expanduser('~'),
-            'save_path_dirs': [
-                os_path_expanduser('~'),
-                os.path.join(os_path_expanduser('~'), "Downloads"),
-                os.path.join(os_path_expanduser('~'), "Desktop"),
-                os.path.join(os_path_expanduser('~'), "Videos"),
-                os.path.join(os_path_expanduser('~'), "Music"),
+            "save_path":
+            os_path_expanduser("~"),
+            "save_path_dirs": [
+                os_path_expanduser("~"),
+                os.path.join(os_path_expanduser("~"), "Downloads"),
+                os.path.join(os_path_expanduser("~"), "Desktop"),
+                os.path.join(os_path_expanduser("~"), "Videos"),
+                os.path.join(os_path_expanduser("~"), "Music"),
             ],
-            'video_format': '0',
-            'second_video_format': '0',
-            'to_audio': False,
-            'keep_video': False,
-            'audio_format': '',
-            'audio_quality': '5',
-            'restrict_filenames': False,
-            'output_format': 1,
-            'output_template': os.path.join('%(uploader)s', '%(title)s.%(ext)s'),
-            'playlist_start': 1,
-            'playlist_end': 0,
-            'max_downloads': 0,
-            'min_filesize': 0,
-            'max_filesize': 0,
-            'min_filesize_unit': '',
-            'max_filesize_unit': '',
-            'write_subs': False,
-            'write_all_subs': False,
-            'write_auto_subs': False,
-            'embed_subs': False,
-            'subs_lang': 'en',
-            'ignore_errors': True,
-            'open_dl_dir': False,
-            'write_description': False,
-            'write_info': False,
-            'write_thumbnail': False,
-            'retries': 10,
-            'user_agent': '',
-            'referer': '',
-            'proxy': '',
-            'shutdown': False,
-            'sudo_password': '',
-            'username': '',
-            'password': '',
-            'video_password': '',
-            'youtubedl_path': self.config_path,
-            'cmd_args': '',
-            'enable_log': True,
-            'log_time': True,
-            'workers_number': 3,
-            'locale_name': get_default_lang(),
-            'main_win_size': (740, 490),
-            'opts_win_size': (640, 490),
-            'selected_video_formats': ['webm', 'mp4'],
-            'selected_audio_formats': ['mp3', 'm4a', 'vorbis'],
-            'selected_format': '0',
-            'youtube_dl_debug': False,
-            'ignore_config': True,
-            'confirm_exit': True,
-            'native_hls': True,
-            'show_completion_popup': True,
-            'confirm_deletion': True,
-            'nomtime': False,
-            'embed_thumbnail': False,
-            'add_metadata': False,
-            'disable_update': False
+            "video_format":
+            "0",
+            "second_video_format":
+            "0",
+            "to_audio":
+            False,
+            "keep_video":
+            False,
+            "audio_format":
+            "",
+            "audio_quality":
+            "5",
+            "restrict_filenames":
+            False,
+            "output_format":
+            1,
+            "output_template":
+            os.path.join("%(uploader)s", "%(title)s.%(ext)s"),
+            "playlist_start":
+            1,
+            "playlist_end":
+            0,
+            "max_downloads":
+            0,
+            "min_filesize":
+            0,
+            "max_filesize":
+            0,
+            "min_filesize_unit":
+            "",
+            "max_filesize_unit":
+            "",
+            "write_subs":
+            False,
+            "write_all_subs":
+            False,
+            "write_auto_subs":
+            False,
+            "embed_subs":
+            False,
+            "subs_lang":
+            "en",
+            "ignore_errors":
+            True,
+            "open_dl_dir":
+            False,
+            "write_description":
+            False,
+            "write_info":
+            False,
+            "write_thumbnail":
+            False,
+            "retries":
+            10,
+            "user_agent":
+            "",
+            "referer":
+            "",
+            "proxy":
+            "",
+            "shutdown":
+            False,
+            "sudo_password":
+            "",
+            "username":
+            "",
+            "password":
+            "",
+            "video_password":
+            "",
+            "youtubedl_path":
+            self.config_path,
+            "cmd_args":
+            "",
+            "enable_log":
+            True,
+            "log_time":
+            True,
+            "workers_number":
+            3,
+            "locale_name":
+            get_default_lang(),
+            "main_win_size": (740, 490),
+            "opts_win_size": (640, 490),
+            "selected_video_formats": ["webm", "mp4"],
+            "selected_audio_formats": ["mp3", "m4a", "vorbis"],
+            "selected_format":
+            "0",
+            "youtube_dl_debug":
+            False,
+            "ignore_config":
+            True,
+            "confirm_exit":
+            True,
+            "native_hls":
+            True,
+            "show_completion_popup":
+            True,
+            "confirm_deletion":
+            True,
+            "auto_download":
+            True,
+            "nomtime":
+            False,
+            "embed_thumbnail":
+            False,
+            "add_metadata":
+            False,
+            "disable_update":
+            False,
         }
 
         # Set the youtubedl_path again if the disable_update option is set
-        new_path = '/usr/bin'
+        new_path = "/usr/bin"
 
-        if self.options['disable_update'] and os.name != 'nt' and os_path_exists(new_path):
-            self.options['youtubedl_path'] = new_path
+        if (self.options["disable_update"] and os.name != "nt"
+                and os_path_exists(new_path)):
+            self.options["youtubedl_path"] = new_path
 
     def load_from_file(self):
         """Load options from settings file. """
         if not os_path_exists(self.settings_file):
             return
 
-        with open(self.settings_file, 'rb') as settings_file:
+        with open(self.settings_file, "rb") as settings_file:
             try:
                 options = json.load(settings_file)
 
@@ -327,12 +371,9 @@ class OptionsManager(object):
         """Save options to settings file. """
         check_path(self.config_path)
 
-        with open(self.settings_file, 'wb') as settings_file:
+        with open(self.settings_file, "w") as settings_file:
             options = self._get_options()
-            json.dump(options,
-                      settings_file,
-                      indent=4,
-                      separators=(',', ': '))
+            json.dump(options, settings_file, indent=4)
 
     def _settings_are_valid(self, settings_dictionary):
         """Check settings.json dictionary.
@@ -345,24 +386,78 @@ class OptionsManager(object):
             True if settings.json dictionary is valid, else False.
 
         """
-        VALID_VIDEO_FORMAT = ('0', '17', '36', '5', '34', '35', '43', '44', '45',
-            '46', '18', '22', '37', '38', '160', '133', '134', '135', '136','137',
-            '264', '138', '242', '243', '244', '247', '248', '271', '272', '82',
-            '83', '84', '85', '100', '101', '102', '139', '140', '141', '171', '172')
+        VALID_VIDEO_FORMAT = (
+            "0",
+            "17",
+            "36",
+            "5",
+            "34",
+            "35",
+            "43",
+            "44",
+            "45",
+            "46",
+            "18",
+            "22",
+            "37",
+            "38",
+            "160",
+            "133",
+            "134",
+            "135",
+            "136",
+            "137",
+            "264",
+            "138",
+            "242",
+            "243",
+            "244",
+            "247",
+            "248",
+            "271",
+            "272",
+            "82",
+            "83",
+            "84",
+            "85",
+            "100",
+            "101",
+            "102",
+            "139",
+            "140",
+            "141",
+            "171",
+            "172",
+        )
 
-        VALID_AUDIO_FORMAT = ('mp3', 'wav', 'aac', 'm4a', 'vorbis', 'opus', 'flac', '')
+        VALID_AUDIO_FORMAT = ("mp3", "wav", "aac", "m4a", "vorbis", "opus",
+                              "flac", "")
 
-        VALID_AUDIO_QUALITY = ('0', '5', '9')
+        VALID_AUDIO_QUALITY = ("0", "5", "9")
 
-        VALID_FILESIZE_UNIT = ('', 'k', 'm', 'g', 't', 'p', 'e', 'z', 'y')
+        VALID_FILESIZE_UNIT = ("", "k", "m", "g", "t", "p", "e", "z", "y")
 
-        VALID_SUB_LANGUAGE = ('en', 'el', 'pt', 'fr', 'it', 'ru', 'es', 'de', 'he', 'sv', 'tr')
+        VALID_SUB_LANGUAGE = (
+            "en",
+            "el",
+            "pt",
+            "fr",
+            "it",
+            "ru",
+            "es",
+            "de",
+            "he",
+            "sv",
+            "tr",
+        )
 
         MIN_FRAME_SIZE = 100
 
         # Decode string formatted tuples back to normal tuples
-        settings_dictionary['main_win_size'] = decode_tuple(settings_dictionary['main_win_size'])
-        settings_dictionary['opts_win_size'] = decode_tuple(settings_dictionary['opts_win_size'])
+        settings_dictionary["main_win_size"] = decode_tuple(
+            settings_dictionary["main_win_size"])
+        settings_dictionary["opts_win_size"] = decode_tuple(
+            settings_dictionary["opts_win_size"])
 
         for key in self.options:
             if key not in settings_dictionary:
@@ -373,14 +468,14 @@ class OptionsManager(object):
 
         # Check if each key has a valid value
         rules_dict = {
-            'video_format': FORMATS.keys(),
-            'second_video_format': VALID_VIDEO_FORMAT,
-            'audio_format': VALID_AUDIO_FORMAT,
-            'audio_quality': VALID_AUDIO_QUALITY,
-            'output_format': OUTPUT_FORMATS.keys(),
-            'min_filesize_unit': VALID_FILESIZE_UNIT,
-            'max_filesize_unit': VALID_FILESIZE_UNIT,
-            'subs_lang': VALID_SUB_LANGUAGE
+            "video_format": FORMATS.keys(),
+            "second_video_format": VALID_VIDEO_FORMAT,
+            "audio_format": VALID_AUDIO_FORMAT,
+            "audio_quality": VALID_AUDIO_QUALITY,
+            "output_format": OUTPUT_FORMATS.keys(),
+            "min_filesize_unit": VALID_FILESIZE_UNIT,
+            "max_filesize_unit": VALID_FILESIZE_UNIT,
+            "subs_lang": VALID_SUB_LANGUAGE,
         }
 
         for key, valid_list in rules_dict.items():
@@ -388,15 +483,15 @@ class OptionsManager(object):
                 return False
 
         # Check workers number value
-        if settings_dictionary['workers_number'] < 1:
+        if settings_dictionary["workers_number"] < 1:
             return False
 
         # Check main-options frame size
-        for size in settings_dictionary['main_win_size']:
+        for size in settings_dictionary["main_win_size"]:
             if size < MIN_FRAME_SIZE:
                 return False
 
-        for size in settings_dictionary['opts_win_size']:
+        for size in settings_dictionary["opts_win_size"]:
             if size < MIN_FRAME_SIZE:
                 return False
 
@@ -407,11 +502,12 @@ class OptionsManager(object):
         temp_options = self.options.copy()
 
         for key in self.SENSITIVE_KEYS:
-            temp_options[key] = ''
+            temp_options[key] = ""
 
         # Encode normal tuples to string formatted tuples
-        temp_options['main_win_size'] = encode_tuple(temp_options['main_win_size'])
-        temp_options['opts_win_size'] = encode_tuple(temp_options['opts_win_size'])
+        temp_options["main_win_size"] = encode_tuple(
+            temp_options["main_win_size"])
+        temp_options["opts_win_size"] = encode_tuple(
+            temp_options["opts_win_size"])
 
         return temp_options
-
