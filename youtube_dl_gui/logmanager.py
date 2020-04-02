@@ -8,7 +8,6 @@ from .utils import os_path_exists
 
 
 class LogManager(object):
-
     """Simple log manager for youtube-dl.
 
     This class is mainly used to log the youtube-dl STDERR.
@@ -73,7 +72,8 @@ class LogManager(object):
 
         with open(self.log_file, mode) as log:
             if mode == "a" and self.add_time:
-                msg = self.TIME_TEMPLATE.format(time=strftime("%c"), error_msg=data)
+                msg = self.TIME_TEMPLATE.format(time=strftime("%c"),
+                                                error_msg=data)
             else:
                 msg = data
 

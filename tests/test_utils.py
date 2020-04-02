@@ -16,7 +16,6 @@ except ImportError as error:
 
 
 class TestToBytes(unittest.TestCase):
-
     """Test case for the to_bytes method."""
 
     def test_to_bytes_bytes(self):
@@ -40,7 +39,6 @@ class TestToBytes(unittest.TestCase):
 
 
 class TestFormatBytes(unittest.TestCase):
-
     """Test case for the format_bytes method."""
 
     def test_format_bytes_bytes(self):
@@ -60,7 +58,6 @@ class TestFormatBytes(unittest.TestCase):
 
 
 class TestBuildCommand(unittest.TestCase):
-
     """Test case for the build_command method."""
 
     def setUp(self):
@@ -69,8 +66,7 @@ class TestBuildCommand(unittest.TestCase):
         self.options = ["-o", None, "-f", "mp4", "--ignore-config"]
 
         self.result = '{{ydl_bin}} -o "{{tmpl}}" -f mp4 --ignore-config "{url}"'.format(
-            url=self.url
-        )
+            url=self.url)
 
     def run_tests(self, ydl_bin, tmpl):
         """Run the main test.
@@ -112,7 +108,6 @@ class TestBuildCommand(unittest.TestCase):
 
 
 class TestGetDefaultLang(unittest.TestCase):
-
     """Test case for the get_default_lang function."""
 
     @mock.patch("youtube_dl_gui.utils.locale_getdefaultlocale")

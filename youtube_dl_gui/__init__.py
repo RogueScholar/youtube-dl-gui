@@ -47,7 +47,6 @@ from .info import (
 
 gettext.install(__packagename__)
 
-
 # Set config path and create options and log managers
 config_path = get_config_path()
 
@@ -63,8 +62,8 @@ locale_dir = get_locale_file()
 
 try:
     gettext.translation(
-        __packagename__, locale_dir, [str(opt_manager.options["locale_name"])]
-    ).install(unicode=True)
+        __packagename__, locale_dir,
+        [str(opt_manager.options["locale_name"])]).install(unicode=True)
 except IOError:
     opt_manager.options["locale_name"] = "en_US"
     gettext.install(__packagename__)
@@ -74,13 +73,15 @@ load_formats()
 
 def main():
     """The real main. Creates and calls the main app windows. """
-    youtubedl_path = os.path.join(opt_manager.options["youtubedl_path"], YOUTUBEDL_BIN)
+    youtubedl_path = os.path.join(opt_manager.options["youtubedl_path"],
+                                  YOUTUBEDL_BIN)
 
     app = wx.App()
     frame = MainFrame(opt_manager, log_manager)
     frame.Show()
 
-    if opt_manager.options["disable_update"] and not os_path_exists(youtubedl_path):
+    if opt_manager.options["disable_update"] and not os_path_exists(
+            youtubedl_path):
         wx.MessageBox(
             _("Failed to locate youtube-dl and updates are disabled"),
             _("Error"),

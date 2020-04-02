@@ -21,7 +21,6 @@ UPDATE_PUB_TOPIC = "update"
 
 
 class UpdateThread(Thread):
-
     """Python Thread that downloads youtube-dl binary.
 
     Attributes:

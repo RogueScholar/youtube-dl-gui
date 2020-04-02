@@ -14,14 +14,14 @@ except ImportError as error:
 
 
 class TestParse(unittest.TestCase):
-
     """Test case for OptionsParser parse method."""
 
     def setUp(self):
         # Create the options_dict based on the OptionHolder
         # items inside the OptionsParser object
         self.options_dict = {
-            item.name: item.default_value for item in OptionsParser()._ydl_options
+            item.name: item.default_value
+            for item in OptionsParser()._ydl_options
         }
 
         # Add extra options used by the OptionsParser.parse method
@@ -35,9 +35,8 @@ class TestParse(unittest.TestCase):
     def check_options_parse(self, expected_options):
         options_parser = OptionsParser()
 
-        self.assertEqual(
-            sorted(options_parser.parse(self.options_dict)), sorted(expected_options)
-        )
+        self.assertEqual(sorted(options_parser.parse(self.options_dict)),
+                         sorted(expected_options))
 
     def test_parse_to_audio_requirement_bug(self):
         """Test case for the 'to_audio' requirement."""
@@ -55,7 +54,8 @@ class TestParse(unittest.TestCase):
             "--audio-quality",
             "9",
             "-o",
-            os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
         ]
 
         self.check_options_parse(expected_cmd_list)
@@ -77,15 +77,15 @@ class TestParse(unittest.TestCase):
 
         # Test with three quoted 'cmd_args'
         self.options_dict[
-            "cmd_args"
-        ] = '--recode-video mkv --postprocessor-args "-codec copy -report"'
+            "cmd_args"] = '--recode-video mkv --postprocessor-args "-codec copy -report"'
 
         expected_cmd_list = [
             "--newline",
             "-f",
             "mp4",
             "-o",
-            os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
             "--recode-video",
             "mkv",
             "--postprocessor-args",
@@ -102,7 +102,8 @@ class TestParse(unittest.TestCase):
             "-f",
             "mp4",
             "-o",
-            os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
             "--postprocessor-args",
             "-y -report",
         ]
@@ -117,7 +118,8 @@ class TestParse(unittest.TestCase):
             "-f",
             "mp4",
             "-o",
-            os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
             "--postprocessor-args",
             "-y",
             "-v",
@@ -133,7 +135,8 @@ class TestParse(unittest.TestCase):
         expected_cmd_list = [
             "--newline",
             "-o",
-            os.path.join("/home/user/Workplace/test/youtube", "%(title)s.%(ext)s"),
+            os.path.join("/home/user/Workplace/test/youtube",
+                         "%(title)s.%(ext)s"),
             "-f",
             "(mp4)[width<1300]",
         ]

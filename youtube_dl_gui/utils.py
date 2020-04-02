@@ -22,16 +22,15 @@ except ImportError as error:
 from .info import __appname__
 from .version import __version__
 
-
 _RANDOM_OBJECT = object()
-
 
 YOUTUBEDL_BIN = "youtube-dl"
 if os.name == "nt":
     YOUTUBEDL_BIN += ".exe"
 
-
-FILESIZE_METRICS = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
+FILESIZE_METRICS = [
+    "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
+]
 
 KILO_SIZE = 1024.0
 
@@ -72,12 +71,10 @@ def convert_item(item, to_unicode=False):
 
         for sub_item in item:
             if isinstance(item, dict):
-                temp_list.append(
-                    (
-                        convert_item(sub_item, to_unicode),
-                        convert_item(item[sub_item], to_unicode),
-                    )
-                )
+                temp_list.append((
+                    convert_item(sub_item, to_unicode),
+                    convert_item(item[sub_item], to_unicode),
+                ))
             else:
                 temp_list.append(convert_item(sub_item, to_unicode))
 
@@ -229,9 +226,10 @@ def shutdown_sys(password=None):
 
     cmd = [item.encode(encoding, "ignore") for item in cmd]
 
-    shutdown_proc = subprocess.Popen(
-        cmd, stderr=_stderr, stdin=_stdin, startupinfo=info
-    )
+    shutdown_proc = subprocess.Popen(cmd,
+                                     stderr=_stderr,
+                                     stdin=_stdin,
+                                     startupinfo=info)
 
     output = shutdown_proc.communicate(password)[1]
 
@@ -343,7 +341,7 @@ def to_bytes(string):
 
     exponent = index * (-1) + (len(FILESIZE_METRICS) - 1)
 
-    return round(value * (KILO_SIZE ** exponent), 2)
+    return round(value * (KILO_SIZE**exponent), 2)
 
 
 def format_bytes(value):
@@ -354,7 +352,7 @@ def format_bytes(value):
         exponent = int(math.log(value, KILO_SIZE))
 
     suffix = FILESIZE_METRICS[exponent]
-    output_value = value / (KILO_SIZE ** exponent)
+    output_value = value / (KILO_SIZE**exponent)
 
     return "%.2f%s" % (output_value, suffix)
 

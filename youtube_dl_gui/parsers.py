@@ -6,7 +6,6 @@ from .utils import to_string
 
 
 class OptionHolder(object):
-
     """Simple data structure that holds informations for the given option.
 
     Args:
@@ -55,7 +54,6 @@ class OptionHolder(object):
 
 
 class OptionsParser(object):
-
     """Parse optionsmanager.OptionsManager options.
 
     This class is responsible for turning some of the youtube-dlg options
@@ -87,14 +85,14 @@ class OptionsParser(object):
             OptionHolder("keep_video", "-k", False),
             OptionHolder("restrict_filenames", "--restrict-filenames", False),
             OptionHolder("save_path", "-o", ""),
-            OptionHolder(
-                "embed_subs", "--embed-subs", False, ["write_auto_subs", "write_subs"]
-            ),
+            OptionHolder("embed_subs", "--embed-subs", False,
+                         ["write_auto_subs", "write_subs"]),
             OptionHolder("to_audio", "-x", False),
             OptionHolder("audio_format", "--audio-format", ""),
             OptionHolder("video_format", "-f", "0"),
             OptionHolder("subs_lang", "--sub-lang", "", ["write_subs"]),
-            OptionHolder("audio_quality", "--audio-quality", "5", ["to_audio"]),
+            OptionHolder("audio_quality", "--audio-quality", "5",
+                         ["to_audio"]),
             OptionHolder("youtube_dl_debug", "-v", False),
             OptionHolder("ignore_config", "--ignore-config", False),
             OptionHolder("native_hls", "--hls-prefer-native", False),
@@ -150,7 +148,8 @@ class OptionsParser(object):
                     # options list
                     if options_dict["audio_quality"] != "5":
                         options_list.append("--audio-quality")
-                        options_list.append(to_string(options_dict["audio_quality"]))
+                        options_list.append(
+                            to_string(options_dict["audio_quality"]))
 
             elif option.name == "audio_quality":
                 # If the '--audio-quality' is not already in the options list
@@ -243,13 +242,11 @@ class OptionsParser(object):
             options_dict (dict): Copy of the original options dictionary.
 
         """
-        if (
-            options_dict["video_format"] != "0"
-            and options_dict["second_video_format"] != "0"
-        ):
+        if (options_dict["video_format"] != "0"
+                and options_dict["second_video_format"] != "0"):
             options_dict["video_format"] = (
-                options_dict["video_format"] + "+" + options_dict["second_video_format"]
-            )
+                options_dict["video_format"] + "+" +
+                options_dict["second_video_format"])
 
     def _build_filesizes(self, options_dict):
         """Build the filesize options values.
@@ -263,12 +260,10 @@ class OptionsParser(object):
         """
         if options_dict["min_filesize"]:
             options_dict["min_filesize"] = (
-                to_string(options_dict["min_filesize"])
-                + options_dict["min_filesize_unit"]
-            )
+                to_string(options_dict["min_filesize"]) +
+                options_dict["min_filesize_unit"])
 
         if options_dict["max_filesize"]:
             options_dict["max_filesize"] = (
-                to_string(options_dict["max_filesize"])
-                + options_dict["max_filesize_unit"]
-            )
+                to_string(options_dict["max_filesize"]) +
+                options_dict["max_filesize_unit"])

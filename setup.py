@@ -76,7 +76,6 @@ if PY2EXE:
         print(error)
         sys.exit(1)
 
-
 # Setup can not handle unicode
 __packagename__ = str(__packagename__)
 
@@ -120,9 +119,8 @@ class BuildTranslations(cmd.Command):
         else:
             self.exec_name = "msgfmt"
 
-        self.search_pattern = os.path.join(
-            __packagename__, "locale", "*", "LC_MESSAGES", "youtube_dl_gui.po"
-        )
+        self.search_pattern = os.path.join(__packagename__, "locale", "*",
+                                           "LC_MESSAGES", "youtube_dl_gui.po")
 
     def run(self):
         for po_file in glob.glob(self.search_pattern):
@@ -132,18 +130,19 @@ class BuildTranslations(cmd.Command):
                 log.info("building MO file for '{}'".format(po_file))
                 call([self.exec_name, "-o", mo_file, po_file])
             except OSError:
-                log.error(
-                    "could not locate file '{}', exiting...".format(self.exec_name)
-                )
+                log.error("could not locate file '{}', exiting...".format(
+                    self.exec_name))
                 sys.exit(1)
 
 
 class Build(build):
     """Overwrite the default 'build' behaviour."""
 
-    sub_commands = [("build_bin", None), ("build_trans", None)] + build.sub_commands
+    sub_commands = [("build_bin", None),
+                    ("build_trans", None)] + build.sub_commands
 
-    build.user_options.append(("no-updates", None, "build with updates disabled"))
+    build.user_options.append(
+        ("no-updates", None, "build with updates disabled"))
 
     def initialize_options(self):
         build.initialize_options(self)
@@ -181,7 +180,11 @@ class Build(build):
 
 
 # Overwrite cmds
-cmdclass = {"build": Build, "build_bin": BuildBin, "build_trans": BuildTranslations}
+cmdclass = {
+    "build": Build,
+    "build_bin": BuildBin,
+    "build_trans": BuildTranslations
+}
 
 
 def linux_setup():
@@ -200,14 +203,15 @@ def linux_setup():
 
     # Add fallback icon, see issue #14
     data_files.append(
-        ("share/pixmaps", ["youtube_dl_gui/data/pixmaps/youtube-dl-gui.png"])
-    )
+        ("share/pixmaps", ["youtube_dl_gui/data/pixmaps/youtube-dl-gui.png"]))
 
     # Add man page
     data_files.append(("share/man/man1", ["youtube-dl-gui.1"]))
 
     # Add pixmaps icons (*.png) & i18n files
-    package_data[__packagename__] = ["data/pixmaps/*.png", "locale/*/LC_MESSAGES/*.mo"]
+    package_data[__packagename__] = [
+        "data/pixmaps/*.png", "locale/*/LC_MESSAGES/*.mo"
+    ]
 
     # Add scripts
     scripts.append("build/_scripts/youtube-dl-gui")
@@ -257,12 +261,11 @@ def windows_setup():
         #############################################
 
         # Add py2exe deps & pixmaps icons (*.png)
-        data_files.extend(
-            [
-                ("", dependencies),
-                ("data\\pixmaps", glob.glob("youtube_dl_gui\\data\\pixmaps\\*.png")),
-            ]
-        )
+        data_files.extend([
+            ("", dependencies),
+            ("data\\pixmaps",
+             glob.glob("youtube_dl_gui\\data\\pixmaps\\*.png")),
+        ])
 
         # We have to manually add the translation files since py2exe cant do it
         for lang in os.listdir("youtube_dl_gui\\locale"):
@@ -272,19 +275,19 @@ def windows_setup():
             data_files.append((dst, [src]))
 
         # Add GUI executable details
-        windows.append(
-            {
-                "script": "build\\_scripts\\youtube-dl-gui",
-                "icon_resources": [
-                    (0, "youtube_dl_gui\\data\\pixmaps\\youtube-dl-gui.ico")
-                ],
-            }
-        )
+        windows.append({
+            "script":
+            "build\\_scripts\\youtube-dl-gui",
+            "icon_resources":
+            [(0, "youtube_dl_gui\\data\\pixmaps\\youtube-dl-gui.ico")],
+        })
 
         setup_params = {
             "windows": windows,
             "data_files": data_files,
-            "options": {"py2exe": options},
+            "options": {
+                "py2exe": options
+            },
         }
 
         return setup_params
@@ -300,16 +303,14 @@ if is_windows():
 else:
     params = linux_setup()
 
-setup(
-    author=__author__,
-    name=__appname__,
-    version=__version__,
-    license=__license__,
-    author_email=__contact__,
-    url=__projecturl__,
-    description=__description__,
-    long_description=__descriptionfull__,
-    packages=[__packagename__],
-    cmdclass=cmdclass,
-    **params
-)
+setup(author=__author__,
+      name=__appname__,
+      version=__version__,
+      license=__license__,
+      author_email=__contact__,
+      url=__projecturl__,
+      description=__description__,
+      long_description=__descriptionfull__,
+      packages=[__packagename__],
+      cmdclass=cmdclass,
+      **params)

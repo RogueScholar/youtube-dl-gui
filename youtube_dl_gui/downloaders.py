@@ -78,7 +78,6 @@ class PipeReader(Thread):
 
 
 class YoutubeDLDownloader(object):
-
     """Python class for downloading videos using youtube-dl & subprocess.
 
     Attributes:
@@ -195,11 +194,8 @@ class YoutubeDLDownloader(object):
             self._return_code = self.ERROR
 
         if self._proc is not None and self._proc.returncode > 0:
-            self._log(
-                "Child process exited with non-zero code: {}".format(
-                    self._proc.returncode
-                )
-            )
+            self._log("Child process exited with non-zero code: {}".format(
+                self._proc.returncode))
 
         self._last_data_hook()
 
@@ -381,6 +377,7 @@ def extract_data(stdout):
         'playlist_size'  : The number of videos in the playlist.
 
     """
+
     # REFACTOR
     def extract_filename(input_data):
         path, fullname = os.path.split(input_data.strip('"'))
@@ -406,9 +403,8 @@ def extract_data(stdout):
 
         # Get path, filename & extension
         if stdout[1] == "Destination:":
-            path, filename, extension = extract_filename(
-                " ".join(stdout_with_spaces[2:])
-            )
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[2:]))
 
             data_dictionary["path"] = path
             data_dictionary["filename"] = filename
@@ -442,9 +438,8 @@ def extract_data(stdout):
         # Get file already downloaded status
         if stdout[-1] == "downloaded":
             data_dictionary["status"] = "Already Downloaded"
-            path, filename, extension = extract_filename(
-                " ".join(stdout_with_spaces[1:-4])
-            )
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[1:-4]))
 
             data_dictionary["path"] = path
             data_dictionary["filename"] = filename
@@ -472,9 +467,8 @@ def extract_data(stdout):
 
         # Get final extension after merging process
         if stdout[1] == "Merging":
-            path, filename, extension = extract_filename(
-                " ".join(stdout_with_spaces[4:])
-            )
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[4:]))
 
             data_dictionary["path"] = path
             data_dictionary["filename"] = filename
@@ -482,9 +476,8 @@ def extract_data(stdout):
 
         # Get final extension ffmpeg post process simple (not file merge)
         if stdout[1] == "Destination:":
-            path, filename, extension = extract_filename(
-                " ".join(stdout_with_spaces[2:])
-            )
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[2:]))
 
             data_dictionary["path"] = path
             data_dictionary["filename"] = filename
@@ -492,9 +485,8 @@ def extract_data(stdout):
 
         # Get final extension after recoding process
         if stdout[1] == "Converting":
-            path, filename, extension = extract_filename(
-                " ".join(stdout_with_spaces[8:])
-            )
+            path, filename, extension = extract_filename(" ".join(
+                stdout_with_spaces[8:]))
 
             data_dictionary["path"] = path
             data_dictionary["filename"] = filename
