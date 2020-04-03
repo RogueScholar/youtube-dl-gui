@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DH_VERBOSE              = 1
+PYBUILD_BUILD_ARGS      = --no-updates
+export DEB_BUILD_MAINT_OPTIONS DH_VERBOSE PYBUILD_BUILD_ARGS
+
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+
+override_dh_auto_test:
+	xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" dh_auto_test
